@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="Dallema">
+  <rect width="32" height="32" rx="7" fill="#F7F3EA"/>
+  <rect x="3.5" y="3.5" width="11.5" height="11.5" rx="2.5" fill="#1F4D3A"/>
+  <rect x="17" y="3.5" width="11.5" height="11.5" rx="2.5" fill="#C9862A"/>
+  <rect x="3.5" y="17" width="11.5" height="11.5" rx="2.5" fill="#6B4F3A"/>
+  <rect x="17" y="17" width="11.5" height="11.5" rx="2.5" fill="#243044"/>
+</svg>
