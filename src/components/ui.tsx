@@ -58,9 +58,10 @@ export function Money({ value, className }: { value: number; className?: string 
 }
 
 export function DeptChip({ id }: { id: DeptId }) {
+  const dept = DEPARTMENTS.find((entry) => entry.id === id);
   return (
     <span className={cn("inline-flex rounded-full px-2.5 py-1 text-xs font-semibold", tone(id).chip)}>
-      {DEPARTMENTS.find((entry) => entry.id === id)?.name ?? id}
+      {dept?.name ?? id}
     </span>
   );
 }
