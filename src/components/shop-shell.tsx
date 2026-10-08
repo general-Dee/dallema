@@ -27,6 +27,8 @@ export function ShopShell({ children }: { children: ReactNode }) {
     void navigate({ to: "/search", search: { q: query } });
   }
 
+  const whatsapp = whatsappLink(settings.phone, settings.storeName);
+
   return (
     <div className="flex min-h-dvh flex-col">
       <a
@@ -36,8 +38,22 @@ export function ShopShell({ children }: { children: ReactNode }) {
         Skip to content
       </a>
       <header className="sticky top-0 z-40 border-b border-line bg-page/95 backdrop-blur">
+        <div className="bg-forest text-cream">
+          <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 py-2 text-xs">
+            <p className="truncate">{settings.address}</p>
+            {whatsapp ? (
+              <a href={whatsapp} target="_blank" rel="noopener noreferrer" className="shrink-0 font-semibold underline decoration-cream/40 underline-offset-2">
+                WhatsApp
+              </a>
+            ) : (
+              <a className="shrink-0 font-semibold underline decoration-cream/40 underline-offset-2" href={`tel:${settings.phone.replace(/\s/g, "")}`}>
+                Call
+              </a>
+            )}
+          </div>
+        </div>
         <div className="mx-auto flex max-w-6xl items-center gap-2 px-4 py-3 sm:gap-3">
-          <Link to="/" aria-label="Dallema home" className="shrink-0 rounded-card bg-cream px-2 py-1.5">
+          <Link to="/" aria-label="Dalema home" className="shrink-0 rounded-card bg-cream px-2 py-1.5">
             <Logo compact />
           </Link>
           <form onSubmit={onSearch} className="min-w-0 flex-1" role="search">
@@ -54,7 +70,7 @@ export function ShopShell({ children }: { children: ReactNode }) {
                   setQuery(value);
                   void navigate({ to: "/search", search: { q: value }, replace: true });
                 }}
-                placeholder="Search rice, loaves, chairs, books"
+                placeholder="Search rice, bread, chairs, books"
                 className={`${inputClass} pl-9`}
               />
             </div>
@@ -94,6 +110,17 @@ export function ShopShell({ children }: { children: ReactNode }) {
                 {settings.phone}
               </a>
             </p>
+            {whatsapp ? (
+              <a
+                href={whatsapp}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-3 inline-flex min-h-12 items-center gap-2 rounded-full bg-[#25D366] px-4 text-sm font-semibold text-[#072016]"
+              >
+                <WhatsAppIcon />
+                WhatsApp
+              </a>
+            ) : null}
           </div>
           <div>
             <p className="text-sm font-semibold tracking-wide uppercase">Hours</p>
@@ -140,6 +167,33 @@ export function ShopShell({ children }: { children: ReactNode }) {
           </div>
         </div>
       </footer>
+      {whatsapp ? (
+        <a
+          href={whatsapp}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label={`WhatsApp ${settings.storeName}`}
+          className="fixed right-4 bottom-24 z-40 inline-flex size-14 items-center justify-center rounded-full bg-[#25D366] text-[#072016] shadow-card lg:bottom-6"
+        >
+          <WhatsAppIcon className="size-7" />
+        </a>
+      ) : null}
     </div>
+  );
+}
+
+function whatsappLink(phone: string, storeName: string) {
+  const digits = phone.replace(/\D/g, "");
+  if (digits.length < 10) return "";
+  const international = digits.startsWith("234") ? digits : digits.replace(/^0/, "234");
+  const text = encodeURIComponent(`Hello ${storeName}, I would like to ask about an order.`);
+  return `https://wa.me/${international}?text=${text}`;
+}
+
+function WhatsAppIcon({ className = "size-5" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} aria-hidden="true" fill="currentColor">
+      <path d="M12.04 2C6.58 2 2.15 6.4 2.15 11.83c0 1.74.46 3.44 1.34 4.94L2 22l5.39-1.41a10 10 0 0 0 4.65 1.18h.01c5.46 0 9.89-4.4 9.89-9.83C21.94 6.4 17.5 2 12.04 2zm5.76 14.15c-.24.68-1.4 1.3-1.94 1.38-.5.08-1.12.11-1.81-.11-.41-.14-.95-.31-1.64-.61-2.89-1.25-4.77-4.16-4.91-4.35-.14-.19-1.16-1.54-1.16-2.94s.73-2.08 1-2.37c.24-.27.64-.39 1.02-.39.12 0 .23 0 .33.01.3.01.44.03.64.49.24.58.82 2 .89 2.15.07.14.12.32.02.51-.09.19-.14.31-.28.48-.14.17-.29.37-.41.5-.14.14-.28.29-.12.56.16.27.71 1.17 1.53 1.9 1.05.94 1.94 1.23 2.21 1.37.27.14.43.12.59-.07.16-.19.68-.79.86-1.06.18-.27.36-.22.6-.13.24.09 1.54.73 1.8.86.27.14.44.19.51.3.07.11.07.64-.17 1.32z" />
+    </svg>
   );
 }

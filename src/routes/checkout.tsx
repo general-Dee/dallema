@@ -25,7 +25,7 @@ function CheckoutPage() {
   const [name, setName] = useState(customer?.name ?? "");
   const [phone, setPhone] = useState(customer?.phone ?? "");
   const [email, setEmail] = useState(customer?.email ?? "");
-  const [method, setMethod] = useState<"pickup" | "delivery">("delivery");
+  const [method, setMethod] = useState<"pickup" | "delivery">(address0 ? "delivery" : "pickup");
   const [zoneId, setZoneId] = useState(address0?.zoneId ?? settings.zones[0]?.id ?? "");
   const [address, setAddress] = useState(address0 ? `${address0.line}, ${address0.area}` : "");
   const slots = grocerySlots();
@@ -105,10 +105,19 @@ function CheckoutPage() {
       >
         <div className="space-y-4">
           <Field label="Name" id="name">
-            <input id="name" required value={name} onChange={(event) => setName(event.target.value)} className={inputClass} />
+            <input id="name" required autoComplete="name" value={name} onChange={(event) => setName(event.target.value)} className={inputClass} />
           </Field>
-          <Field label="Phone" id="phone" hint="Required. We call if the loaf or the van is early.">
-            <input id="phone" required inputMode="tel" value={phone} onChange={(event) => setPhone(event.target.value)} className={inputClass} />
+          <Field label="Phone" id="phone" hint="Required. We call this number if the loaf or the van is early.">
+            <input
+              id="phone"
+              required
+              inputMode="tel"
+              autoComplete="tel"
+              placeholder="0803 000 0000"
+              value={phone}
+              onChange={(event) => setPhone(event.target.value)}
+              className={inputClass}
+            />
           </Field>
           <Field label="Email" id="email" hint="Optional.">
             <input id="email" type="email" value={email} onChange={(event) => setEmail(event.target.value)} className={inputClass} />
@@ -120,13 +129,13 @@ function CheckoutPage() {
                 {(["pickup", "delivery"] as const).map((option) => (
                   <label key={option} className="flex min-h-12 items-center gap-2 rounded-card border border-line bg-card px-3">
                     <input type="radio" name="method" checked={method === option} onChange={() => setMethod(option)} />
-                    {option === "pickup" ? "Pickup · free" : "Delivery"}
+                    {option === "pickup" ? "Collect at the shop · free" : "Deliver in Kaduna"}
                   </label>
                 ))}
               </div>
             </fieldset>
           ) : (
-            <p className="rounded-card bg-walnut-soft px-4 py-3 text-sm text-walnut-deep">This order is furniture only, so it goes on the van.</p>
+            <p className="rounded-card bg-walnut-soft px-4 py-3 text-sm text-walnut-deep">This order is furniture only, so the van brings it. Grocery pickup does not apply.</p>
           )}
           {preview.hasCounter ? (
             <Field label="Time" id="slot">
@@ -150,17 +159,33 @@ function CheckoutPage() {
               </select>
             </Field>
           ) : null}
+          {method === "pickup" && preview.hasCounter && !preview.hasFurniture ? (
+            <p className="rounded-card bg-forest-soft px-4 py-3 text-sm text-forest-ink">
+              Collect at {settings.address}. Bring the order number. Pickup is free.
+            </p>
+          ) : null}
           {needsAddress ? (
             <>
-              <Field label="Address" id="address">
-                <textarea id="address" required value={address} onChange={(event) => setAddress(event.target.value)} className={`${inputClass} min-h-24 py-3`} />
+              <Field label="Where should we bring it?" id="address" hint="House number, street, and area in Kaduna.">
+                <textarea
+                  id="address"
+                  required
+                  value={address}
+                  onChange={(event) => setAddress(event.target.value)}
+                  placeholder="12 Isa Kaita Road, Ungwan Rimi"
+                  className={`${inputClass} min-h-24 py-3`}
+                />
               </Field>
-              <Field label="Zone" id="zone">
+              <Field
+                label="Which part of Kaduna?"
+                id="zone"
+                hint="The near zone is Malali, Ungwan Rimi, and Ungwan Munchi, by Zamani College, plus Kabala. The other zone is Barnawa, Kawo, Sabon Tasha, and Kakuri."
+              >
                 <select id="zone" className={inputClass} value={zoneId} onChange={(event) => setZoneId(event.target.value)}>
                   {settings.zones.map((entry) => (
                     <option key={entry.id} value={entry.id}>
                       {entry.name} · ₦{entry.fee.toLocaleString("en-NG")}
-                      {method === "delivery" && preview.hasCounter ? ` · minimum ₦${entry.minimum.toLocaleString("en-NG")}` : ""}
+                      {method === "delivery" && preview.hasCounter ? ` · shop from ₦${entry.minimum.toLocaleString("en-NG")}` : ""}
                     </option>
                   ))}
                 </select>

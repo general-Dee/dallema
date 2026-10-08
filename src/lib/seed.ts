@@ -92,7 +92,7 @@ function buildProducts(): Product[] {
       compareAtPrice: 9200,
       shortDescription: "Local ofada, five kilos, washed and bagged this week.",
       longDescription:
-        "Stone-milled ofada from the Ogun side, packed in a 5kg sack. It cooks into that short, fragrant grain that wants palm oil and a proper stew. We keep it off the floor and sell it by the sack.",
+        "Stone-milled ofada, packed in a 5kg sack for this counter. It cooks into that short, fragrant grain that wants palm oil and a proper stew. We keep it off the floor and sell it by the sack.",
       featured: true,
       tags: ["bestseller"],
       supplierId: sm,
@@ -134,7 +134,7 @@ function buildProducts(): Product[] {
       costPrice: 3600,
       shortDescription: "Thirty farm eggs, checked the morning they arrive.",
       longDescription:
-        "A full crate from the poultry we use in Ikorodu. Cracked eggs are replaced at the counter. Keep them cool if the house is hot.",
+        "A full crate from the poultry we use on Zaria Road. Cracked eggs are replaced at the counter. Keep them cool if the house is hot.",
       supplierId: fresh,
       tags: ["chilled", "bestseller"],
       trackExpiry: true,
@@ -306,7 +306,7 @@ function buildProducts(): Product[] {
       costPrice: 420,
       shortDescription: "The soft, tall loaf. Baked this morning.",
       longDescription:
-        "Our Agege-style loaf: soft crumb, thin crust, sliced only if you ask. It is what most people mean when they say bread on Market Road. Best the day it is baked.",
+        "Our Agege-style loaf: soft crumb, thin crust, sliced only if you ask. It is the soft loaf most Kaduna kitchens mean by bread. Best the day it is baked.",
       supplierId: bake,
       tags: ["bestseller"],
       featured: true,
@@ -459,7 +459,7 @@ function buildProducts(): Product[] {
       costPrice: 146000,
       shortDescription: "A two-door wardrobe with a hanging rail and one shelf.",
       longDescription:
-        "Tall wardrobe for a Lagos bedroom that doesn’t have a walk-in. Doors are hinged, not sliding. It must be assembled in the room. Measure the doorway before you order — the panels are long.",
+        "Tall wardrobe for a Kaduna bedroom that doesn’t have a walk-in. Doors are hinged, not sliding. It must be assembled in the room. Measure the doorway before you order — the panels are long.",
       supplierId: walnut,
       taxRate: 7.5,
       assemblyRequired: true,
@@ -520,9 +520,9 @@ function buildProducts(): Product[] {
     row("childrens-reader", "Children’s Reader: Amaka Goes to Market", "school", 2500, "piece", 11, {
       sku: "BK-READ-1",
       costPrice: 1400,
-      shortDescription: "A picture reader for early primary, set on a Lagos market day.",
+      shortDescription: "A picture reader for early primary, set on a Kaduna market day.",
       longDescription:
-        "Short sentences, big type, and a story about a child sent to buy tomatoes and coming home with the right change. Teachers on Market Road use it for Primary 1 and 2.",
+        "Short sentences, big type, and a story about a child sent to buy tomatoes and coming home with the right change. Teachers in Kaduna North use it for Primary 1 and 2.",
       supplierId: ink,
       tags: ["school"],
       featured: true,
@@ -538,10 +538,10 @@ function buildProducts(): Product[] {
       tags: ["school", "bestseller"],
       weightKg: 0.7,
     }),
-    row("novel-lagos", "Novel: The Light on Hughes Avenue", "fiction", 4200, "piece", 7, {
-      sku: "BK-HUGHES",
+    row("novel-lagos", "Novel: The Light on Isa Kaita Road", "fiction", 4200, "piece", 7, {
+      sku: "BK-KAITA",
       costPrice: 2400,
-      shortDescription: "A Lagos neighbourhood novel. Staff pick this month.",
+      shortDescription: "A Kaduna neighbourhood novel. Staff pick this month.",
       longDescription:
         "A quiet novel about a street that looks like ours: a shop, a church, a generator, and a family deciding whether to stay. The bookstore desk keeps a copy face-out.",
       supplierId: ink,
@@ -549,7 +549,7 @@ function buildProducts(): Product[] {
       featured: true,
       weightKg: 0.35,
     }),
-    row("cookbook", "Cookbook: Pots from Market Road", "reference", 6800, "piece", 6, {
+    row("cookbook", "Cookbook: Pots from Isa Kaita", "reference", 6800, "piece", 6, {
       sku: "BK-POTS",
       costPrice: 3900,
       shortDescription: "Stews and small chops, written for the ingredients we actually sell.",
@@ -579,10 +579,10 @@ function buildProducts(): Product[] {
       tags: ["school"],
       weightKg: 0.5,
     }),
-    row("coloring-book", "Colouring Book: Lagos Streets", "school", 2200, "piece", 13, {
+    row("coloring-book", "Colouring Book: Kaduna Streets", "school", 2200, "piece", 13, {
       sku: "BK-COLOUR",
       costPrice: 1100,
-      shortDescription: "Line drawings of danfo, market stalls, and compound gates.",
+      shortDescription: "Line drawings of keke, market stalls, and compound gates.",
       longDescription:
         "A colouring book for children who already know these streets. Paper is thick enough for pencil. Crayons are not included.",
       supplierId: ink,
@@ -610,12 +610,12 @@ function buildProducts(): Product[] {
       reorderLevel: 8,
       weightKg: 0.9,
     }),
-    row("staff-novel", "Staff pick: Rain on Third Mainland", "fiction", 4500, "piece", 6, {
+    row("staff-novel", "Staff pick: Rain over the Kaduna River", "fiction", 4500, "piece", 6, {
       sku: "BK-RAIN",
       costPrice: 2600,
       shortDescription: "The other novel on the desk this month. A drive, a storm, a decision.",
       longDescription:
-        "Shorter than Hughes Avenue, and wetter. If you only want one book, the desk will still talk you into this one when it is raining. We keep a handful face-out.",
+        "Shorter than Isa Kaita Road, and wetter. If you only want one book, the desk will still talk you into this one when it is raining. We keep a handful face-out.",
       supplierId: ink,
       featured: true,
       weightKg: 0.3,
@@ -669,13 +669,13 @@ export function createSeed(): SeedData {
   const tomorrow = addDays(today, 1);
   const products = buildProducts();
   const settings: Settings = {
-    storeName: "Dallema",
-    address: "14 Market Road, Surulere, Lagos",
+    storeName: "Dalema",
+    address: "No. 70 Isa Kaita Road, Ungwan Munchi, Kaduna North",
     phone: "0803 555 0142",
     hours: "Monday to Saturday 8:00–20:00 · Sunday 10:00–16:00 · Bakery counter from 7:00",
     zones: [
-      { id: "z-near", name: "0–3 km", minKm: 0, maxKm: 3, fee: 800, minimum: 3000 },
-      { id: "z-mid", name: "3–7 km", minKm: 3, maxKm: 7, fee: 1500, minimum: 5000 },
+      { id: "z-near", name: "Kaduna North", minKm: 0, maxKm: 3, fee: 800, minimum: 3000 },
+      { id: "z-mid", name: "Barnawa, Kawo & Sabon Tasha", minKm: 3, maxKm: 7, fee: 1500, minimum: 5000 },
     ],
     earnNairaPerPoint: 100,
     nairaPer100Points: 500,
@@ -694,8 +694,8 @@ export function createSeed(): SeedData {
         {
           id: "ad_amaka",
           label: "Home",
-          line: "22 Adeniran Ogunsanya",
-          area: "Surulere",
+          line: "22 Isa Kaita Road",
+          area: "Ungwan Rimi",
           zoneId: "z-near",
         },
       ],
@@ -711,7 +711,7 @@ export function createSeed(): SeedData {
       phone: "0805 220 1184",
       email: "chinedu.eze@email.com",
       addresses: [
-        { id: "ad_chi", label: "Home", line: "8 Hughes Avenue", area: "Yaba", zoneId: "z-near" },
+        { id: "ad_chi", label: "Home", line: "8 Umaru Dikko Road", area: "Malali", zoneId: "z-near" },
       ],
       loyaltyPoints: 120,
       tier: "Seed",
@@ -725,7 +725,7 @@ export function createSeed(): SeedData {
       phone: "0816 330 9044",
       email: "fatima.bello@email.com",
       addresses: [
-        { id: "ad_fat", label: "Flat", line: "15 Ayoola", area: "Anthony", zoneId: "z-mid" },
+        { id: "ad_fat", label: "Flat", line: "15 Barnawa Close", area: "Barnawa", zoneId: "z-mid" },
       ],
       loyaltyPoints: 1620,
       tier: "Harvest",
@@ -739,7 +739,7 @@ export function createSeed(): SeedData {
       phone: "0802 776 4510",
       email: "tunde.adeyemi@email.com",
       addresses: [
-        { id: "ad_tun", label: "Home", line: "4 Diya Street", area: "Gbagada", zoneId: "z-mid" },
+        { id: "ad_tun", label: "Home", line: "4 Katuru Road", area: "Sabon Tasha", zoneId: "z-mid" },
       ],
       loyaltyPoints: 80,
       tier: "Seed",
@@ -753,7 +753,7 @@ export function createSeed(): SeedData {
       phone: "0703 118 6621",
       email: "ngozi.okonkwo@email.com",
       addresses: [
-        { id: "ad_ngo", label: "Home", line: "19 Ogunlana", area: "Surulere", zoneId: "z-near" },
+        { id: "ad_ngo", label: "Home", line: "19 Alkali Road", area: "Kabala", zoneId: "z-near" },
       ],
       loyaltyPoints: 450,
       tier: "Seed",
@@ -767,7 +767,7 @@ export function createSeed(): SeedData {
       phone: "0813 900 2275",
       email: "ibrahim.lawal@email.com",
       addresses: [
-        { id: "ad_ibr", label: "Shop", line: "3 Ojuelegba Road", area: "Yaba", zoneId: "z-near" },
+        { id: "ad_ibr", label: "Shop", line: "3 Constitution Road", area: "Kaduna North", zoneId: "z-near" },
       ],
       loyaltyPoints: 900,
       tier: "Sprout",
@@ -781,7 +781,7 @@ export function createSeed(): SeedData {
       phone: "0809 554 7730",
       email: "seyi.balogun@email.com",
       addresses: [
-        { id: "ad_sey", label: "Home", line: "27 Bode Thomas", area: "Surulere", zoneId: "z-near" },
+        { id: "ad_sey", label: "Home", line: "27 Ibrahim Taiwo Road", area: "Ungwan Rimi", zoneId: "z-near" },
       ],
       loyaltyPoints: 2100,
       tier: "Harvest",
@@ -795,7 +795,7 @@ export function createSeed(): SeedData {
       phone: "0812 667 3408",
       email: "halima.yusuf@email.com",
       addresses: [
-        { id: "ad_hal", label: "Home", line: "6 Ikorodu Road", area: "Anthony", zoneId: "z-mid" },
+        { id: "ad_hal", label: "Home", line: "6 Kachia Road", area: "Kakuri", zoneId: "z-mid" },
       ],
       loyaltyPoints: 40,
       tier: "Seed",
@@ -883,7 +883,7 @@ export function createSeed(): SeedData {
       groceryMethod: "delivery",
       slot: `${today} · afternoon (12–5)`,
       furnitureSlot: null,
-      address: "22 Adeniran Ogunsanya, Surulere",
+      address: "22 Isa Kaita Road, Ungwan Rimi",
       zoneId: "z-near",
       lines: l1042,
       deliveryFee: 800,
@@ -935,7 +935,7 @@ export function createSeed(): SeedData {
       groceryMethod: null,
       slot: null,
       furnitureSlot: `${today} · afternoon (12–5)`,
-      address: "15 Ayoola, Anthony",
+      address: "15 Barnawa Close, Barnawa",
       zoneId: "z-mid",
       lines: l1044,
       deliveryFee: 2500,
@@ -987,7 +987,7 @@ export function createSeed(): SeedData {
       groceryMethod: "delivery",
       slot: `${twoAgo} · afternoon (12–5)`,
       furnitureSlot: `${twoAgo} · afternoon (12–5)`,
-      address: "4 Diya Street, Gbagada",
+      address: "4 Katuru Road, Sabon Tasha",
       zoneId: "z-mid",
       lines: l1046,
       deliveryFee: 2500,
@@ -1031,14 +1031,14 @@ export function createSeed(): SeedData {
   const suppliers: Supplier[] = [
     {
       id: "sup_mill",
-      name: "Lagos Mill & Staples",
+      name: "Kaduna Mill & Staples",
       departmentIds: ["supermarket"],
       phone: "0802 111 2201",
       leadDays: 2,
     },
     {
       id: "sup_fresh",
-      name: "Oyingbo Fresh Desk",
+      name: "Central Market Fresh Desk",
       departmentIds: ["supermarket"],
       phone: "0803 414 7781",
       leadDays: 1,
@@ -1178,7 +1178,7 @@ export function createSeed(): SeedData {
       orderId: "ord_1042",
       type: "grocery",
       window: `${today} · afternoon (12–5)`,
-      address: "22 Adeniran Ogunsanya, Surulere",
+      address: "22 Isa Kaita Road, Ungwan Rimi",
       status: "delivered",
       assemblyRequired: false,
     },
@@ -1187,7 +1187,7 @@ export function createSeed(): SeedData {
       orderId: "ord_1044",
       type: "furniture",
       window: `${today} · afternoon (12–5)`,
-      address: "15 Ayoola, Anthony",
+      address: "15 Barnawa Close, Barnawa",
       status: "scheduled",
       assemblyRequired: false,
     },
@@ -1196,7 +1196,7 @@ export function createSeed(): SeedData {
       orderId: "ord_1046",
       type: "furniture",
       window: `${twoAgo} · afternoon (12–5)`,
-      address: "4 Diya Street, Gbagada",
+      address: "4 Katuru Road, Sabon Tasha",
       status: "delivered",
       assemblyRequired: true,
     },
@@ -1205,7 +1205,7 @@ export function createSeed(): SeedData {
       orderId: "ord_1046",
       type: "grocery",
       window: `${twoAgo} · afternoon (12–5)`,
-      address: "4 Diya Street, Gbagada",
+      address: "4 Katuru Road, Sabon Tasha",
       status: "delivered",
       assemblyRequired: false,
     },

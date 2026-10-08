@@ -40,7 +40,7 @@ function Dashboard() {
 
   return (
     <div>
-      <h1 className="font-display text-4xl text-forest-ink">Today on Market Road</h1>
+      <h1 className="font-display text-4xl text-forest-ink">Today at the shop</h1>
       <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
         <Stat label="Today’s sales" value={naira(sales)} />
         <Stat label="Orders to fulfill" value={String(openOrders.length)} />

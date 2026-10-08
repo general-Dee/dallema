@@ -140,9 +140,12 @@ function CartPage() {
             <dl className="mt-4 space-y-2 text-sm">
               <Row label="Subtotal" value={quote.subtotal} />
               <Row label="Promo" value={-quote.promoDiscount} />
-              <div className="flex justify-between gap-3">
+              <div>
                 <dt className="text-muted">Delivery</dt>
-                <dd className="text-right">Added at checkout. Pickup is free. Zones from ₦800. Furniture from ₦{settings.furnitureDeliveryFee.toLocaleString("en-NG")}.</dd>
+                <dd className="mt-1 text-muted">
+                  Chosen at checkout. Collect at the shop for free, or we deliver in Kaduna from ₦800. Furniture from ₦
+                  {settings.furnitureDeliveryFee.toLocaleString("en-NG")}.
+                </dd>
               </div>
               <div className="flex justify-between border-t border-line pt-2 text-base font-semibold">
                 <dt>Goods total</dt>

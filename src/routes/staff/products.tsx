@@ -16,14 +16,24 @@ function ProductsPage() {
   const suppliers = useDallema((state) => state.suppliers);
   const log = useDallema((state) => state.stockLog);
   const save = useDallema((state) => state.saveProduct);
+  const remove = useDallema((state) => state.deleteProduct);
   const adjust = useDallema((state) => state.adjustStock);
+  const [query, setQuery] = useState("");
   const [lowOnly, setLowOnly] = useState(false);
   const [editing, setEditing] = useState<Product | null>(null);
   const [isNew, setIsNew] = useState(false);
+  const [pendingDelete, setPendingDelete] = useState<string | null>(null);
   const [delta, setDelta] = useState(1);
   const [reason, setReason] = useState<StockReason>("count");
   const [note, setNote] = useState("");
-  const rows = (lowOnly ? lowStockProducts(products) : products).slice().sort((a, b) => a.name.localeCompare(b.name));
+  const needle = query.trim().toLowerCase();
+  const rows = (lowOnly ? lowStockProducts(products) : products)
+    .filter((product) => {
+      if (!needle) return true;
+      return [product.name, product.sku, product.barcode, product.categoryId].join(" ").toLowerCase().includes(needle);
+    })
+    .slice()
+    .sort((a, b) => a.name.localeCompare(b.name));
 
   return (
     <div>
@@ -42,6 +52,14 @@ function ProductsPage() {
         <input type="checkbox" checked={lowOnly} onChange={(event) => setLowOnly(event.target.checked)} />
         Low stock only
       </label>
+      <input
+        className={`${inputClass} mt-3`}
+        value={query}
+        onChange={(event) => setQuery(event.target.value)}
+        placeholder="Search name, SKU, or barcode"
+        aria-label="Search products"
+      />
+      <p className="mt-2 text-sm text-muted">{rows.length} items</p>
       <div className="mt-3 overflow-x-auto rounded-card border border-line bg-card">
         <table className="min-w-[760px] w-full text-left text-sm">
           <thead className="border-b border-line text-muted">
@@ -69,16 +87,46 @@ function ProductsPage() {
                 <td className="p-3">{product.isMadeToOrder ? "Made to order" : product.stockOnHand}</td>
                 <td className="p-3">{product.active ? "On sale" : "Hidden"}</td>
                 <td className="p-3">
-                  <button
-                    type="button"
-                    className="font-semibold text-forest-ink underline"
-                    onClick={() => {
-                      setEditing(product);
-                      setIsNew(false);
-                    }}
-                  >
-                    Edit
-                  </button>
+                  {pendingDelete === product.id ? (
+                    <span className="flex flex-wrap items-center gap-2">
+                      <span className="text-muted">Remove {product.name}?</span>
+                      <button
+                        type="button"
+                        className="font-semibold text-danger underline"
+                        onClick={() => {
+                          const result = remove(product.id);
+                          if (!result.ok) toast.error(result.message);
+                          else {
+                            toast.success(`${product.name} removed. Past orders stay.`);
+                            if (editing?.id === product.id) setEditing(null);
+                            setPendingDelete(null);
+                          }
+                        }}
+                      >
+                        Yes, remove
+                      </button>
+                      <button type="button" className="font-semibold underline" onClick={() => setPendingDelete(null)}>
+                        Keep
+                      </button>
+                    </span>
+                  ) : (
+                    <span className="flex gap-3">
+                      <button
+                        type="button"
+                        className="font-semibold text-forest-ink underline"
+                        onClick={() => {
+                          setEditing(product);
+                          setIsNew(false);
+                          setPendingDelete(null);
+                        }}
+                      >
+                        Edit
+                      </button>
+                      <button type="button" className="font-semibold text-danger underline" onClick={() => setPendingDelete(product.id)}>
+                        Remove
+                      </button>
+                    </span>
+                  )}
                 </td>
               </tr>
             ))}
@@ -196,11 +244,33 @@ function ProductsPage() {
               </label>
             ))}
           </div>
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-2">
             <Button type="submit">Save product</Button>
             <Button type="button" variant="secondary" onClick={() => setEditing(null)}>
               Close
             </Button>
+            {!isNew && pendingDelete !== editing.id ? (
+              <Button type="button" variant="danger" onClick={() => setPendingDelete(editing.id)}>
+                Remove item
+              </Button>
+            ) : null}
+            {!isNew && pendingDelete === editing.id ? (
+              <Button
+                type="button"
+                variant="danger"
+                onClick={() => {
+                  const result = remove(editing.id);
+                  if (!result.ok) toast.error(result.message);
+                  else {
+                    toast.success(`${editing.name} removed. Past orders stay.`);
+                    setEditing(null);
+                    setPendingDelete(null);
+                  }
+                }}
+              >
+                Yes, remove {editing.name}
+              </Button>
+            ) : null}
           </div>
           {!isNew ? (
             <div className="border-t border-line pt-3">

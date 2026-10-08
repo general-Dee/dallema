@@ -31,7 +31,7 @@ function OrderPage() {
           ? "We’re putting it together now."
           : order.status === "ready"
             ? order.fulfillment === "pickup"
-              ? "It’s ready for pickup at 14 Market Road."
+              ? `It’s ready for pickup at ${settings.address}.`
               : "It’s packed and waiting for the rider or van."
             : order.status === "out_for_delivery"
               ? "It’s on the way. Keep your phone near."

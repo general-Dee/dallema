@@ -12,8 +12,8 @@ export const Route = createRootRoute({
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Dallema" },
-      { name: "description", content: "Shop food, fresh bakes, furniture, and books from Dallema on Market Road, Surulere." },
+      { title: "Dalema" },
+      { name: "description", content: "Shop food, fresh bakes, furniture, and books from Dalema, No. 70 Isa Kaita Road, Ungwan Munchi, Kaduna North." },
       { name: "theme-color", content: "#1F4D3A" },
     ],
     links: [

@@ -6,7 +6,7 @@ import { ProductCard, WishButton } from "@/components/product-card";
 import { ShopShell } from "@/components/shop-shell";
 import { Button, DeptChip, Empty, Field, Money } from "@/components/ui";
 import { inputClass } from "@/components/ui";
-import { BOUGHT_TOGETHER, categoryName } from "@/lib/catalog";
+import { BOUGHT_TOGETHER, DEPARTMENTS, categoryName } from "@/lib/catalog";
 import { earliestMadeDate, formatDay, furnitureSlots, naira } from "@/lib/format";
 import { useDallema } from "@/lib/store";
 
@@ -42,6 +42,7 @@ function ProductPage() {
     .filter((entry): entry is NonNullable<typeof entry> => Boolean(entry))
     .slice(0, 2);
   const windows = furnitureSlots();
+  const department = DEPARTMENTS.find((entry) => entry.id === product.departmentId);
 
   return (
     <ShopShell>
@@ -51,13 +52,13 @@ function ProductPage() {
         </Link>{" "}
         /{" "}
         <Link to="/shop/$dept" params={{ dept: product.departmentId }} className="underline">
-          {product.departmentId}
+          {department?.name ?? product.departmentId}
         </Link>{" "}
         / {categoryName(product.categoryId)}
       </p>
       <div className="mt-4 grid gap-6 lg:grid-cols-2">
-        <ProductArt product={product} className="aspect-square rounded-card" />
-        <div>
+        <ProductArt product={product} className="aspect-square rounded-2xl border border-line" />
+        <div className="h-fit rounded-2xl border border-line bg-card p-5 shadow-card lg:sticky lg:top-28">
           <div className="flex items-start justify-between gap-3">
             <DeptChip id={product.departmentId} />
             <WishButton productId={product.id} />

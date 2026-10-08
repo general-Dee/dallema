@@ -57,10 +57,10 @@ export function Money({ value, className }: { value: number; className?: string 
   return <span className={cn("tabular-nums", className)}>{naira(value)}</span>;
 }
 
-export function DeptChip({ id }: { id: DeptId }) {
+export function DeptChip({ id, solid = false }: { id: DeptId; solid?: boolean }) {
   const dept = DEPARTMENTS.find((entry) => entry.id === id);
   return (
-    <span className={cn("inline-flex rounded-full px-2.5 py-1 text-xs font-semibold", tone(id).chip)}>
+    <span className={cn("inline-flex rounded-full px-2.5 py-1 text-xs font-semibold", solid ? tone(id).solid : tone(id).chip)}>
       {dept?.name ?? id}
     </span>
   );

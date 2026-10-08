@@ -11,7 +11,7 @@ export function Logo({ className, compact = false }: { className?: string; compa
         <BookOpen className="size-3.5 text-ink-fill" strokeWidth={2.25} />
       </span>
       <span className={cn("font-display text-xl leading-none font-semibold tracking-tight", compact && "max-sm:hidden")}>
-        Dallema
+        Dalema
       </span>
     </span>
   );

@@ -7,7 +7,7 @@ import { cn } from "@/lib/cn";
 import { useDallema, wishlistIds } from "@/lib/store";
 import type { Product } from "@/lib/types";
 
-export function WishButton({ productId }: { productId: string }) {
+export function WishButton({ productId, floating = false }: { productId: string; floating?: boolean }) {
   const wished = useDallema((state) => wishlistIds(state).includes(productId));
   const toggle = useDallema((state) => state.toggleWishlist);
   return (
@@ -16,7 +16,10 @@ export function WishButton({ productId }: { productId: string }) {
       aria-pressed={wished}
       aria-label={wished ? "Remove from wishlist" : "Save to wishlist"}
       onClick={() => toggle(productId)}
-      className="inline-flex size-11 items-center justify-center rounded-full hover:bg-cream-deep"
+      className={cn(
+        "inline-flex size-11 items-center justify-center rounded-full",
+        floating ? "bg-card/95 shadow-sm hover:bg-cream-deep" : "hover:bg-cream-deep",
+      )}
     >
       <Heart className={cn("size-5", wished ? "fill-danger text-danger" : "text-forest-ink")} />
     </button>
@@ -27,20 +30,28 @@ export function ProductCard({ product }: { product: Product }) {
   const add = useDallema((state) => state.addToCart);
   const onOffer = product.compareAtPrice != null && product.compareAtPrice > product.price;
   return (
-    <article className="flex flex-col overflow-hidden rounded-card border border-line bg-card shadow-card">
-      <Link to="/p/$slug" params={{ slug: product.slug }} className="block">
-        <ProductArt product={product} />
-      </Link>
-      <div className="flex flex-1 flex-col gap-2 p-3">
-        <div className="flex items-start justify-between gap-2">
-          <DeptChip id={product.departmentId} />
-          <WishButton productId={product.id} />
+    <article className="lift flex flex-col overflow-hidden rounded-2xl border border-line bg-card shadow-card">
+      <div className="relative">
+        <Link to="/p/$slug" params={{ slug: product.slug }} className="block" tabIndex={-1} aria-hidden="true">
+          <ProductArt product={product} />
+        </Link>
+        <div className="pointer-events-none absolute top-2.5 left-2.5">
+          <DeptChip id={product.departmentId} solid />
         </div>
-        <Link to="/p/$slug" params={{ slug: product.slug }} className="font-semibold leading-snug text-soil">
+        {onOffer ? (
+          <span className="pointer-events-none absolute bottom-2.5 left-2.5 rounded-full bg-bake px-2.5 py-1 text-xs font-semibold text-on-bake">
+            Offer
+          </span>
+        ) : null}
+        <div className="absolute top-1.5 right-1.5">
+          <WishButton productId={product.id} floating />
+        </div>
+      </div>
+      <div className="flex flex-1 flex-col gap-3 p-3.5">
+        <Link to="/p/$slug" params={{ slug: product.slug }} className="line-clamp-2 font-display text-xl leading-tight text-soil">
           {product.name}
         </Link>
-        <p className="line-clamp-2 text-sm text-muted">{product.shortDescription}</p>
-        <div className="mt-auto flex items-end justify-between gap-2 pt-2">
+        <div className="mt-auto flex items-end justify-between gap-2">
           <div>
             <p className="text-lg font-semibold">
               <Money value={product.price} />
@@ -51,7 +62,17 @@ export function ProductCard({ product }: { product: Product }) {
                 <Money value={product.compareAtPrice ?? 0} />
               </p>
             ) : null}
-            <p className="text-xs text-muted">
+            <p className="mt-1 inline-flex items-center gap-1.5 text-xs text-muted">
+              <span
+                className={cn(
+                  "size-1.5 rounded-full",
+                  product.isMadeToOrder || (product.stockOnHand > 0 && product.stockOnHand > product.reorderLevel)
+                    ? "bg-forest"
+                    : product.stockOnHand <= 0
+                      ? "bg-danger"
+                      : "bg-bake",
+                )}
+              />
               {product.isMadeToOrder
                 ? `${product.leadTimeHours}h notice`
                 : product.stockOnHand <= 0

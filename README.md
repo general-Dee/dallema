@@ -1,6 +1,6 @@
-# Dallema
+# Dalema
 
-Neighbourhood shop on 14 Market Road, Surulere. One brand, four counters: supermarket, bakery, furniture, and bookstore. The same app is the customer shop and the staff desk.
+Neighbourhood shop at No. 70 Isa Kaita Road, Ungwan Munchi, Kaduna North, beside Zamani College. One brand, four counters: supermarket, bakery, furniture, and bookstore. The same app is the customer shop and the staff desk.
 
 ## Run it
 
@@ -9,7 +9,7 @@ npm install
 npm run dev
 ```
 
-Demo staff entrance: `owner@dallema.store` / `dallema`. Orders, stock, and settings stay in the browser.
+Demo staff entrance: `owner@dalema.store` / `dalema`. Orders, stock, and settings stay in the browser.
 
 ## Shop
 

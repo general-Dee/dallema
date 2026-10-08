@@ -92,6 +92,7 @@ interface ShopState extends SeedData {
   posCheckout: (input: PosInput) => Result<{ number: string }>;
   adjustStock: (productId: string, delta: number, reason: StockReason, note: string) => Result<null>;
   saveProduct: (product: Product, isNew: boolean) => Result<null>;
+  deleteProduct: (productId: string) => Result<null>;
   saveBakery: (jobId: string, patch: Partial<Pick<BakeryJob, "qtyPlanned" | "qtyBaked" | "qtyWaste">>) => void;
   createBakeryJobs: (date: string) => Result<{ count: number }>;
   markDelivery: (jobId: string, status: DeliveryJob["status"]) => Result<null>;
@@ -586,16 +587,39 @@ export const useDallema = create<ShopState>()(
       },
       saveProduct: (product, isNew) => {
         if (!product.name.trim()) return { ok: false, message: "Name the product." };
+        if (!product.sku.trim()) return { ok: false, message: "Add a SKU." };
         if (product.price < 0 || product.costPrice < 0) return { ok: false, message: "Prices can’t be negative." };
         const clash = get().products.find(
           (entry) => entry.sku.toLowerCase() === product.sku.trim().toLowerCase() && entry.id !== product.id,
         );
         if (clash) return { ok: false, message: "That SKU is already used." };
-        const next = { ...product, name: product.name.trim(), sku: product.sku.trim() };
+        const slug = product.slug.trim();
+        const slugClash = get().products.find((entry) => entry.slug === slug && entry.id !== product.id);
+        if (slug && slugClash) return { ok: false, message: "Another item already uses that name." };
+        const next = { ...product, name: product.name.trim(), sku: product.sku.trim(), slug };
         set({
           products: isNew
             ? [next, ...get().products]
             : get().products.map((entry) => (entry.id === product.id ? next : entry)),
+        });
+        return { ok: true, data: null };
+      },
+      deleteProduct: (productId) => {
+        const product = get().products.find((entry) => entry.id === productId);
+        if (!product) return { ok: false, message: "That item is already gone." };
+        set({
+          products: get().products.filter((entry) => entry.id !== productId),
+          cart: get().cart.filter((line) => line.productId !== productId),
+          guestWishlist: get().guestWishlist.filter((id) => id !== productId),
+          customers: get().customers.map((customer) => ({
+            ...customer,
+            wishlist: customer.wishlist.filter((id) => id !== productId),
+          })),
+          bakeryJobs: get().bakeryJobs.filter((job) => job.productId !== productId),
+          schoolLists: get().schoolLists.map((list) => ({
+            ...list,
+            items: list.items.filter((item) => item.productId !== productId),
+          })),
         });
         return { ok: true, data: null };
       },
@@ -1000,6 +1024,31 @@ export const useDallema = create<ShopState>()(
     }),
     {
       name: "dallema-store-v1",
+      version: 4,
+      migrate: (persisted, version) => {
+        if (version >= 4 || !persisted || typeof persisted !== "object") return persisted;
+        const seed = createSeed();
+        const previous = persisted as {
+          cart?: unknown;
+          promoCode?: unknown;
+          activeCustomerId?: unknown;
+          guestWishlist?: unknown;
+          staff?: { email?: string; name?: string; role?: string } | null;
+        };
+        const staff = previous.staff
+          ? { ...previous.staff, name: "Dalema owner", email: "owner@dalema.store" }
+          : previous.staff;
+        return {
+          ...previous,
+          products: seed.products,
+          customers: seed.customers,
+          orders: seed.orders,
+          suppliers: seed.suppliers,
+          deliveryJobs: seed.deliveryJobs,
+          settings: seed.settings,
+          staff,
+        };
+      },
       storage: createJSONStorage(() => safeStorage),
       skipHydration: true,
       partialize: (state) => ({

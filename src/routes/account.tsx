@@ -114,10 +114,10 @@ function AccountPage() {
           <h2 className="font-display text-3xl text-forest-ink">Saved address</h2>
           <div className="mt-3 grid gap-3 sm:grid-cols-2">
             <Field label="Street" id="line">
-              <input id="line" className={inputClass} value={line} onChange={(event) => setLine(event.target.value)} />
+              <input id="line" className={inputClass} placeholder="12 Isa Kaita Road" value={line} onChange={(event) => setLine(event.target.value)} />
             </Field>
             <Field label="Area" id="area">
-              <input id="area" className={inputClass} value={area} onChange={(event) => setArea(event.target.value)} />
+              <input id="area" className={inputClass} placeholder="Ungwan Rimi" value={area} onChange={(event) => setArea(event.target.value)} />
             </Field>
             <Field label="Zone" id="zone">
               <select id="zone" className={inputClass} value={zoneId} onChange={(event) => setZoneId(event.target.value)}>
