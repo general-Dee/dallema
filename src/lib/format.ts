@@ -110,3 +110,26 @@ export function tierFor(points: number): "Seed" | "Sprout" | "Harvest" {
 export function uid(prefix: string): string {
   return `${prefix}_${Math.random().toString(36).slice(2, 10)}`;
 }
+
+export function whatsappHref(phone: string, text: string): string {
+  const digits = phone.replace(/\D/g, "");
+  if (digits.length < 10) return "";
+  const international = digits.startsWith("234") ? digits : digits.replace(/^0/, "234");
+  return `https://wa.me/${international}?text=${encodeURIComponent(text)}`;
+}
+
+export function orderWhatsAppText(order: {
+  number: string;
+  contactName: string;
+  total: number;
+  fulfillment: string;
+  address: string | null;
+  lines: { qty: number; name: string }[];
+}): string {
+  const lines = order.lines.map((line) => `${line.qty} × ${line.name}`).join("\n");
+  const how =
+    order.fulfillment === "pickup" || !order.address
+      ? "I will collect it at the shop."
+      : `Please deliver to ${order.address}.`;
+  return `Hello Dalema, this is ${order.contactName}. I placed ${order.number}.\n${lines}\nTotal ${naira(order.total)}.\n${how}`;
+}

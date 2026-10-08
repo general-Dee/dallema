@@ -1,9 +1,11 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { ShopShell } from "@/components/shop-shell";
 import { DeptChip, Empty, Money, StatusPill } from "@/components/ui";
 import { STATUS_LABEL } from "@/lib/catalog";
-import { formatWhen } from "@/lib/format";
+import { formatWhen, orderWhatsAppText, whatsappHref } from "@/lib/format";
+import { fetchSharedOrder } from "@/lib/orders.functions";
 import { useDallema } from "@/lib/store";
 
 export const Route = createFileRoute("/order/$number")({
@@ -13,12 +15,33 @@ export const Route = createFileRoute("/order/$number")({
 function OrderPage() {
   const { number } = Route.useParams();
   const order = useDallema((state) => state.orders.find((entry) => entry.number.toLowerCase() === number.toLowerCase()));
+  const merge = useDallema((state) => state.mergeSharedOrders);
   const customer = useDallema((state) => state.customers.find((entry) => entry.id === order?.customerId) ?? null);
   const settings = useDallema((state) => state.settings);
+  const [missing, setMissing] = useState(false);
+  useEffect(() => {
+    let stop = false;
+    async function pull() {
+      const result = await fetchSharedOrder({ data: { number } });
+      if (stop) return;
+      if (result.ok && result.order) {
+        merge([result.order]);
+        setMissing(false);
+      } else if (!useDallema.getState().orders.some((entry) => entry.number.toLowerCase() === number.toLowerCase())) {
+        setMissing(true);
+      }
+    }
+    void pull();
+    const timer = window.setInterval(() => void pull(), 10000);
+    return () => {
+      stop = true;
+      window.clearInterval(timer);
+    };
+  }, [merge, number]);
   if (!order) {
     return (
       <ShopShell>
-        <Empty title="No order with that number" body="Check the code, or look under Account if you used a household profile." />
+        <Empty title="No order with that number" body={missing ? "Check the code, or look under Account if you used a household profile." : "Looking up that order on the desk…"} />
       </ShopShell>
     );
   }
@@ -47,7 +70,20 @@ function OrderPage() {
         <StatusPill status={order.status} />
       </div>
       <p className="mt-3 max-w-xl text-muted">{next}</p>
-      <p className="mt-2 text-sm text-muted">Placed {formatWhen(order.createdAt)} · {order.channel === "pos" ? "Till" : "Web"} · {order.paymentStatus === "paid_demo" ? "Paid (demo)" : "Unpaid"}</p>
+      <p className="mt-2 text-sm text-muted">Placed {formatWhen(order.createdAt)} · {order.channel === "pos" ? "Till" : "Web"} · {order.paymentStatus === "unpaid" ? "Awaiting payment" : "Paid"}</p>
+      {order.paymentStatus === "unpaid" ? (
+        <p className="mt-2 max-w-xl text-sm text-muted">Pay when you collect, or send the transfer and say so on WhatsApp. The desk marks it paid.</p>
+      ) : null}
+      {whatsappHref(settings.phone, orderWhatsAppText(order)) ? (
+        <a
+          href={whatsappHref(settings.phone, orderWhatsAppText(order))}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="mt-4 inline-flex min-h-12 items-center rounded-card bg-[#25D366] px-4 text-sm font-semibold text-[#072016]"
+        >
+          Send this order on WhatsApp
+        </a>
+      ) : null}
       <div className="mt-6 grid gap-4 lg:grid-cols-2">
         <section className="rounded-card border border-line bg-card p-4">
           <h2 className="font-semibold">What you ordered</h2>

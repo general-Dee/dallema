@@ -11,6 +11,7 @@ import {
   tierFor,
   uid,
 } from "./format";
+import { saveSharedOrder, updateSharedOrder } from "./orders.functions";
 import { breakdownOf, buildQuote, resolveLines, stockError } from "./pricing";
 import { createSeed, type SeedData } from "./seed";
 import type {
@@ -23,6 +24,7 @@ import type {
   Order,
   OrderLine,
   OrderStatus,
+  PaymentStatus,
   Product,
   Promotion,
   PromoType,
@@ -87,8 +89,10 @@ interface ShopState extends SeedData {
   removeLine: (key: string) => void;
   clearCart: () => void;
   setPromoCode: (code: string | null) => void;
-  placeOrder: (input: PlaceOrderInput) => Result<{ number: string }>;
+  placeOrder: (input: PlaceOrderInput) => Promise<Result<{ number: string }>>;
   updateOrderStatus: (orderId: string, status: OrderStatus) => Result<{ number: string }>;
+  markOrderPaid: (orderId: string) => Result<{ number: string }>;
+  mergeSharedOrders: (incoming: Order[]) => void;
   posCheckout: (input: PosInput) => Result<{ number: string }>;
   adjustStock: (productId: string, delta: number, reason: StockReason, note: string) => Result<null>;
   saveProduct: (product: Product, isNew: boolean) => Result<null>;
@@ -296,7 +300,7 @@ export const useDallema = create<ShopState>()(
       removeLine: (key) => set({ cart: get().cart.filter((line) => line.key !== key) }),
       clearCart: () => set({ cart: [], promoCode: null }),
       setPromoCode: (code) => set({ promoCode: code?.trim() ? code.trim().toUpperCase() : null }),
-      placeOrder: (input) => {
+      placeOrder: async (input) => {
         const state = get();
         const resolved = resolveLines(state.cart, state.products);
         if (resolved.length === 0) return { ok: false, message: "Your basket is empty." };
@@ -395,7 +399,7 @@ export const useDallema = create<ShopState>()(
           promoDiscount: quote.promoDiscount,
           loyaltyDiscount: quote.loyaltyDiscount,
           total: quote.total,
-          paymentStatus: "paid_demo",
+          paymentStatus: "unpaid",
           notes: input.notes.trim(),
           promoCode: quote.promo?.code ?? null,
           pointsRedeemed: quote.redeemPoints,
@@ -404,6 +408,14 @@ export const useDallema = create<ShopState>()(
           assemblyRequired: lines.some((line) => line.assembly),
           createdAt: new Date().toISOString(),
         };
+        let placed = order;
+        try {
+          const saved = await saveSharedOrder({ data: { order } });
+          if (!saved.ok) return saved;
+          placed = saved.order;
+        } catch {
+          return { ok: false, message: "The desk couldn’t record this order. Try again in a moment." };
+        }
         let customers = state.customers;
         let ledger = state.ledger;
         if (customer && quote.redeemPoints > 0) {
@@ -417,23 +429,22 @@ export const useDallema = create<ShopState>()(
               id: uid("led"),
               customerId: customer.id,
               points: -quote.redeemPoints,
-              reason: `Redeemed on ${number}`,
-              orderId: order.id,
-              createdAt: order.createdAt,
+              reason: `Redeemed on ${placed.number}`,
+              orderId: placed.id,
+              createdAt: placed.createdAt,
             },
             ...ledger,
           ];
         }
         set({
-          orders: [order, ...state.orders],
+          orders: [placed, ...state.orders],
           customers,
           ledger,
-          deliveryJobs: [...jobsForOrder(order), ...state.deliveryJobs],
-          nextOrderSeq: state.nextOrderSeq + 1,
+          deliveryJobs: [...jobsForOrder(placed), ...state.deliveryJobs],
           cart: [],
           promoCode: null,
         });
-        return { ok: true, data: { number } };
+        return { ok: true, data: { number: placed.number } };
       },
       updateOrderStatus: (orderId, status) => {
         const state = get();
@@ -487,7 +498,57 @@ export const useDallema = create<ShopState>()(
             entry.id === order.id ? { ...entry, status, stockDeducted, pointsAwarded } : entry,
           ),
         });
+        void updateSharedOrder({ data: { deskKey: DEMO_STAFF.password, id: order.id, status } }).catch(() => undefined);
         return { ok: true, data: { number: order.number } };
+      },
+      markOrderPaid: (orderId) => {
+        const order = get().orders.find((entry) => entry.id === orderId);
+        if (!order) return { ok: false, message: "Order not found." };
+        set({
+          orders: get().orders.map((entry) =>
+            entry.id === orderId ? { ...entry, paymentStatus: "paid_demo" } : entry,
+          ),
+        });
+        void updateSharedOrder({
+          data: { deskKey: DEMO_STAFF.password, id: orderId, paymentStatus: "paid_demo" },
+        }).catch(() => undefined);
+        return { ok: true, data: { number: order.number } };
+      },
+      mergeSharedOrders: (incoming) => {
+        const rank: Record<OrderStatus, number> = {
+          pending: 0,
+          confirmed: 1,
+          preparing: 2,
+          ready: 3,
+          out_for_delivery: 4,
+          completed: 5,
+          cancelled: 6,
+        };
+        const current = get().orders;
+        const byKey = new Map(current.map((order) => [order.id, order]));
+        for (const order of incoming) {
+          const existing = byKey.get(order.id) ?? current.find((entry) => entry.number === order.number);
+          if (!existing) {
+            byKey.set(order.id, order);
+            continue;
+          }
+          const status = rank[order.status] >= rank[existing.status] ? order.status : existing.status;
+          const paymentStatus: PaymentStatus = order.paymentStatus === "paid_demo" || existing.paymentStatus === "paid_demo" ? "paid_demo" : "unpaid";
+          const merged = {
+            ...existing,
+            ...order,
+            id: existing.id,
+            status,
+            paymentStatus,
+            stockDeducted: existing.stockDeducted || order.stockDeducted,
+            pointsAwarded: existing.pointsAwarded || order.pointsAwarded,
+          };
+          byKey.delete(existing.id);
+          byKey.set(merged.id, merged);
+        }
+        set({
+          orders: [...byKey.values()].sort((a, b) => b.createdAt.localeCompare(a.createdAt)),
+        });
       },
       posCheckout: (input) => {
         const state = get();

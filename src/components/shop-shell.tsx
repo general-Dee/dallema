@@ -5,6 +5,7 @@ import { Logo } from "@/components/logo";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { inputClass } from "@/components/ui";
 import { DEPARTMENTS } from "@/lib/catalog";
+import { whatsappHref } from "@/lib/format";
 import { useDallema } from "@/lib/store";
 
 export function ShopShell({ children }: { children: ReactNode }) {
@@ -27,7 +28,7 @@ export function ShopShell({ children }: { children: ReactNode }) {
     void navigate({ to: "/search", search: { q: query } });
   }
 
-  const whatsapp = whatsappLink(settings.phone, settings.storeName);
+  const whatsapp = whatsappHref(settings.phone, `Hello ${settings.storeName}, I would like to ask about an order.`);
 
   return (
     <div className="flex min-h-dvh flex-col">
@@ -180,14 +181,6 @@ export function ShopShell({ children }: { children: ReactNode }) {
       ) : null}
     </div>
   );
-}
-
-function whatsappLink(phone: string, storeName: string) {
-  const digits = phone.replace(/\D/g, "");
-  if (digits.length < 10) return "";
-  const international = digits.startsWith("234") ? digits : digits.replace(/^0/, "234");
-  const text = encodeURIComponent(`Hello ${storeName}, I would like to ask about an order.`);
-  return `https://wa.me/${international}?text=${text}`;
 }
 
 function WhatsAppIcon({ className = "size-5" }: { className?: string }) {

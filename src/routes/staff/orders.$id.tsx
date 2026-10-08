@@ -37,6 +37,7 @@ function OrderDesk() {
   const { id } = Route.useParams();
   const order = useDallema((state) => state.orders.find((entry) => entry.id === id));
   const update = useDallema((state) => state.updateOrderStatus);
+  const markPaid = useDallema((state) => state.markOrderPaid);
   if (!order) {
     return <p>That order isn’t on the queue.</p>;
   }
@@ -53,7 +54,7 @@ function OrderDesk() {
         <StatusPill status={order.status} />
       </div>
       <p className="mt-2 text-sm text-muted">
-        {formatWhen(order.createdAt)} · {order.channel} · {order.paymentStatus === "paid_demo" ? "Paid demo" : "Unpaid"} · stock {order.stockDeducted ? "taken" : "not yet taken"}
+        {formatWhen(order.createdAt)} · {order.channel} · {order.paymentStatus === "unpaid" ? "Awaiting payment" : "Paid"} · stock {order.stockDeducted ? "taken" : "not yet taken"}
       </p>
       <div className="no-print mt-4 flex flex-wrap gap-2">
         {actions.map((action) => (
@@ -72,6 +73,18 @@ function OrderDesk() {
         <Button variant="secondary" onClick={() => window.print()}>
           Print summary
         </Button>
+        {order.paymentStatus === "unpaid" ? (
+          <Button
+            variant="bake"
+            onClick={() => {
+              const result = markPaid(order.id);
+              if (!result.ok) toast.error(result.message);
+              else toast.success(`${order.number} marked paid`);
+            }}
+          >
+            Mark paid
+          </Button>
+        ) : null}
       </div>
       <div className="mt-6 grid gap-4 lg:grid-cols-2" id="print-sheet">
         <section className="rounded-card border border-line bg-card p-4">

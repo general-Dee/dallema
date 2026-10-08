@@ -35,6 +35,7 @@ function CheckoutPage() {
   const [furnitureSlotId, setFurnitureSlotId] = useState(preset && furn.some((slot) => slot.id === preset) ? preset : (furn[0]?.id ?? ""));
   const [notes, setNotes] = useState("");
   const [redeem, setRedeem] = useState(0);
+  const [placing, setPlacing] = useState(false);
 
   const preview = useMemo(() => {
     const hasFurniture = cart.some((line) => products.find((product) => product.id === line.productId)?.departmentId === "furniture");
@@ -82,25 +83,30 @@ function CheckoutPage() {
         className="mt-6 grid gap-6 lg:grid-cols-[1.2fr_0.8fr]"
         onSubmit={(event) => {
           event.preventDefault();
-          const result = placeOrder({
-            name,
-            phone,
-            email,
-            customerId: customer?.id ?? null,
-            groceryMethod: preview.hasCounter ? method : "pickup",
-            zoneId: needsAddress ? zoneId : "",
-            address: needsAddress ? address : "",
-            slotId: preview.hasCounter ? slotId : "",
-            furnitureSlotId: preview.hasFurniture ? furnitureSlotId : "",
-            notes,
-            redeemPoints: redeem,
-          });
-          if (!result.ok) {
-            toast.error(result.message);
-            return;
-          }
-          toast.success(`Order ${result.data.number} placed`);
-          void navigate({ to: "/order/$number", params: { number: result.data.number } });
+          if (placing) return;
+          setPlacing(true);
+          void (async () => {
+            const result = await placeOrder({
+              name,
+              phone,
+              email,
+              customerId: customer?.id ?? null,
+              groceryMethod: preview.hasCounter ? method : "pickup",
+              zoneId: needsAddress ? zoneId : "",
+              address: needsAddress ? address : "",
+              slotId: preview.hasCounter ? slotId : "",
+              furnitureSlotId: preview.hasFurniture ? furnitureSlotId : "",
+              notes,
+              redeemPoints: redeem,
+            });
+            setPlacing(false);
+            if (!result.ok) {
+              toast.error(result.message);
+              return;
+            }
+            toast.success(`Order ${result.data.number} is on the desk`);
+            void navigate({ to: "/order/$number", params: { number: result.data.number } });
+          })();
         }}
       >
         <div className="space-y-4">
@@ -231,9 +237,10 @@ function CheckoutPage() {
           {quote.promoError ? <p className="mt-2 text-sm text-danger">{quote.promoError}</p> : null}
           {promoCode ? <p className="mt-2 text-sm text-forest-ink">Code {promoCode}</p> : null}
           <p className="mt-3 text-sm text-muted">Demo payment only. We mark the order paid and put it on the shop queue. No card is charged.</p>
-          <Button type="submit" className="mt-4 w-full">
-            Place order (demo payment)
+          <Button type="submit" className="mt-4 w-full" disabled={placing}>
+            {placing ? "Sending to the desk…" : "Place order"}
           </Button>
+          <p className="mt-2 text-sm text-muted">Pay when you collect, or tell the shop on WhatsApp. The order shows on the staff desk, not only on this phone.</p>
         </aside>
       </form>
     </ShopShell>
