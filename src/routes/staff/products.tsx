@@ -1,6 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { Pencil, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
+import { HoverTip } from "@/components/hover-tip";
 import { Button, DeptChip, Field, Money } from "@/components/ui";
 import { inputClass } from "@/components/ui";
 import { CATEGORIES, DEPARTMENTS, TAGS } from "@/lib/catalog";
@@ -110,21 +112,31 @@ function ProductsPage() {
                       </button>
                     </span>
                   ) : (
-                    <span className="flex gap-3">
-                      <button
-                        type="button"
-                        className="font-semibold text-forest-ink underline"
-                        onClick={() => {
-                          setEditing(product);
-                          setIsNew(false);
-                          setPendingDelete(null);
-                        }}
-                      >
-                        Edit
-                      </button>
-                      <button type="button" className="font-semibold text-danger underline" onClick={() => setPendingDelete(product.id)}>
-                        Remove
-                      </button>
+                    <span className="flex gap-1">
+                      <HoverTip label="Edit">
+                        <button
+                          type="button"
+                          aria-label={`Edit ${product.name}`}
+                          className="inline-flex size-11 items-center justify-center rounded-full text-forest-ink hover:bg-forest-soft"
+                          onClick={() => {
+                            setEditing(product);
+                            setIsNew(false);
+                            setPendingDelete(null);
+                          }}
+                        >
+                          <Pencil className="size-4" aria-hidden="true" />
+                        </button>
+                      </HoverTip>
+                      <HoverTip label="Remove">
+                        <button
+                          type="button"
+                          aria-label={`Remove ${product.name}`}
+                          className="inline-flex size-11 items-center justify-center rounded-full text-danger hover:bg-danger-soft"
+                          onClick={() => setPendingDelete(product.id)}
+                        >
+                          <Trash2 className="size-4" aria-hidden="true" />
+                        </button>
+                      </HoverTip>
                     </span>
                   )}
                 </td>

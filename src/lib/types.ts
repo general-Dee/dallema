@@ -24,7 +24,7 @@ export type Channel = "web" | "pos";
 
 export type Fulfillment = "pickup" | "delivery" | "furniture_delivery";
 
-export type PaymentStatus = "unpaid" | "paid_demo";
+export type PaymentStatus = "unpaid" | "paid" | "paid_demo";
 
 export type Tier = "Seed" | "Sprout" | "Harvest";
 

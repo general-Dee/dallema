@@ -1,5 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import type { ButtonHTMLAttributes, ReactNode } from "react";
+import { DeptIcon } from "@/components/product-art";
+import { HoverTip } from "@/components/hover-tip";
 import { DEPARTMENTS, STATUS_LABEL, tone } from "@/lib/catalog";
 import { cn } from "@/lib/cn";
 import { naira } from "@/lib/format";
@@ -59,10 +61,19 @@ export function Money({ value, className }: { value: number; className?: string 
 
 export function DeptChip({ id, solid = false }: { id: DeptId; solid?: boolean }) {
   const dept = DEPARTMENTS.find((entry) => entry.id === id);
+  const name = dept?.name ?? id;
   return (
-    <span className={cn("inline-flex rounded-full px-2.5 py-1 text-xs font-semibold", solid ? tone(id).solid : tone(id).chip)}>
-      {dept?.name ?? id}
-    </span>
+    <HoverTip label={name} side="bottom">
+      <span
+        aria-label={name}
+        className={cn(
+          "inline-flex size-8 items-center justify-center rounded-full",
+          solid ? tone(id).solid : tone(id).chip,
+        )}
+      >
+        <DeptIcon id={id} className="size-4" />
+      </span>
+    </HoverTip>
   );
 }
 
@@ -96,14 +107,19 @@ export function DeptLinks() {
   return (
     <div className="mt-4 flex flex-wrap justify-center gap-2">
       {DEPARTMENTS.map((dept) => (
-        <Link
-          key={dept.id}
-          to="/shop/$dept"
-          params={{ dept: dept.slug }}
-          className="inline-flex min-h-11 items-center rounded-full bg-cream-deep px-4 text-sm font-semibold text-forest-ink"
-        >
-          {dept.name}
-        </Link>
+        <HoverTip key={dept.id} label={dept.name}>
+          <Link
+            to="/shop/$dept"
+            params={{ dept: dept.slug }}
+            aria-label={dept.name}
+            className={cn(
+              "inline-flex size-12 items-center justify-center rounded-full",
+              tone(dept.id).panel,
+            )}
+          >
+            <DeptIcon id={dept.id} className="size-5" />
+          </Link>
+        </HoverTip>
       ))}
     </div>
   );

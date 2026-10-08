@@ -537,7 +537,7 @@ export const useDallema = create<ShopState>()(
             continue;
           }
           const status = rank[order.status] >= rank[existing.status] ? order.status : existing.status;
-          const paymentStatus: PaymentStatus = order.paymentStatus === "paid_demo" || existing.paymentStatus === "paid_demo" ? "paid_demo" : "unpaid";
+          const paymentStatus: PaymentStatus = order.paymentStatus !== "unpaid" ? order.paymentStatus : existing.paymentStatus;
           const merged = {
             ...existing,
             ...order,

@@ -1,6 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { Minus, Plus, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
+import { HoverTip } from "@/components/hover-tip";
 import { ShopShell } from "@/components/shop-shell";
 import { Button, DeptChip, Empty, Field, Money } from "@/components/ui";
 import { inputClass } from "@/components/ui";
@@ -45,11 +47,11 @@ function CartPage() {
       {quote.lines.length === 0 ? (
         <div className="mt-6">
           <Empty
-            title="The basket is empty"
-            body="Add a loaf, a tin of tomatoes, a book, or a table. Mixed departments are welcome."
+            title="Nothing is on its way yet"
+            body="Choose what the house needs. We bring groceries, bread, and books to your door, often the same day."
             action={
-              <Link to="/shop/$dept" params={{ dept: "supermarket" }}>
-                <Button>Start with the supermarket</Button>
+              <Link to="/" hash="departments">
+                <Button>Shop from home</Button>
               </Link>
             }
           />
@@ -75,40 +77,47 @@ function CartPage() {
                           </p>
                         </div>
                         <div className="flex items-center gap-2">
-                          <Button
-                            variant="secondary"
-                            className="size-11 px-0"
-                            aria-label={`Decrease ${line.product.name}`}
-                            onClick={() => {
-                              const result = setQty(line.line.key, line.line.qty - 1);
-                              if (!result.ok) toast.error(result.message);
-                            }}
-                          >
-                            −
-                          </Button>
+                          <HoverTip label="Less">
+                            <Button
+                              variant="secondary"
+                              className="size-11 px-0"
+                              aria-label={`Decrease ${line.product.name}`}
+                              onClick={() => {
+                                const result = setQty(line.line.key, line.line.qty - 1);
+                                if (!result.ok) toast.error(result.message);
+                              }}
+                            >
+                              <Minus className="size-4" aria-hidden="true" />
+                            </Button>
+                          </HoverTip>
                           <span className="w-6 text-center tabular-nums">{line.line.qty}</span>
-                          <Button
-                            variant="secondary"
-                            className="size-11 px-0"
-                            aria-label={`Increase ${line.product.name}`}
-                            onClick={() => {
-                              const result = setQty(line.line.key, line.line.qty + 1);
-                              if (!result.ok) toast.error(result.message);
-                            }}
-                          >
-                            +
-                          </Button>
+                          <HoverTip label="More">
+                            <Button
+                              variant="secondary"
+                              className="size-11 px-0"
+                              aria-label={`Increase ${line.product.name}`}
+                              onClick={() => {
+                                const result = setQty(line.line.key, line.line.qty + 1);
+                                if (!result.ok) toast.error(result.message);
+                              }}
+                            >
+                              <Plus className="size-4" aria-hidden="true" />
+                            </Button>
+                          </HoverTip>
                         </div>
                         <p className="w-24 text-right font-semibold">
                           <Money value={line.lineTotal} />
                         </p>
-                        <button
-                          type="button"
-                          className="text-sm font-semibold text-danger underline"
-                          onClick={() => remove(line.line.key)}
-                        >
-                          Remove
-                        </button>
+                        <HoverTip label="Remove">
+                          <button
+                            type="button"
+                            aria-label={`Remove ${line.product.name}`}
+                            className="inline-flex size-11 items-center justify-center rounded-full text-danger hover:bg-danger-soft"
+                            onClick={() => remove(line.line.key)}
+                          >
+                            <Trash2 className="size-4" aria-hidden="true" />
+                          </button>
+                        </HoverTip>
                       </li>
                     ))}
                   </ul>
@@ -143,7 +152,7 @@ function CartPage() {
               <div>
                 <dt className="text-muted">Delivery</dt>
                 <dd className="mt-1 text-muted">
-                  Chosen at checkout. Collect at the shop for free, or we deliver in Kaduna from ₦800. Furniture from ₦
+                  To your door across Kaduna, often the same day if you order before 4pm, from ₦800. Collecting at the shop is free. Furniture from ₦
                   {settings.furnitureDeliveryFee.toLocaleString("en-NG")}.
                 </dd>
               </div>

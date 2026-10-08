@@ -1,5 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { Printer } from "lucide-react";
 import { toast } from "sonner";
+import { HoverTip } from "@/components/hover-tip";
 import { Button, DeptChip, Money, StatusPill } from "@/components/ui";
 import { formatWhen } from "@/lib/format";
 import { useDallema } from "@/lib/store";
@@ -70,9 +72,11 @@ function OrderDesk() {
             {action.label}
           </Button>
         ))}
-        <Button variant="secondary" onClick={() => window.print()}>
-          Print summary
-        </Button>
+        <HoverTip label="Print summary">
+          <Button variant="secondary" className="size-12 px-0" aria-label="Print summary" onClick={() => window.print()}>
+            <Printer className="size-5" aria-hidden="true" />
+          </Button>
+        </HoverTip>
         {order.paymentStatus === "unpaid" ? (
           <Button
             variant="bake"

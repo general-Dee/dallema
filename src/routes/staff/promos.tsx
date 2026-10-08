@@ -1,6 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { Pencil } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
+import { HoverTip } from "@/components/hover-tip";
 import { Button, Field } from "@/components/ui";
 import { inputClass } from "@/components/ui";
 import { DEPARTMENTS } from "@/lib/catalog";
@@ -29,9 +31,16 @@ function PromosPage() {
                 {promo.label || (promo.type === "percent" ? `${promo.value}%` : naira(promo.value))} · min {naira(promo.minSpend)} · {promo.active ? "Active" : "Off"}
               </p>
             </div>
-            <button type="button" className="font-semibold underline" onClick={() => setDraft(promo)}>
-              Edit
-            </button>
+            <HoverTip label="Edit">
+              <button
+                type="button"
+                aria-label={`Edit ${promo.code}`}
+                className="inline-flex size-11 items-center justify-center rounded-full text-forest-ink hover:bg-forest-soft"
+                onClick={() => setDraft(promo)}
+              >
+                <Pencil className="size-4" aria-hidden="true" />
+              </button>
+            </HoverTip>
           </li>
         ))}
       </ul>

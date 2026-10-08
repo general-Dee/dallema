@@ -14,7 +14,7 @@ export const Route = createRootRoute({
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { title: "Dalema" },
-      { name: "description", content: "Shop food, fresh bakes, furniture, and books from Dalema, No. 70 Isa Kaita Road, Ungwan Munchi, Kaduna North." },
+      { name: "description", content: "Shop from home. Dalema brings groceries, fresh bread, and school books to your door in Kaduna, often the same day." },
       { name: "theme-color", content: "#1F4D3A" },
     ],
     links: [

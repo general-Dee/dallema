@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
-import { Heart } from "lucide-react";
+import { CalendarDays, Heart, Plus, Tag } from "lucide-react";
 import { toast } from "sonner";
+import { HoverTip } from "@/components/hover-tip";
 import { ProductArt } from "@/components/product-art";
 import { Button, DeptChip, Money } from "@/components/ui";
 import { cn } from "@/lib/cn";
@@ -10,19 +11,22 @@ import type { Product } from "@/lib/types";
 export function WishButton({ productId, floating = false }: { productId: string; floating?: boolean }) {
   const wished = useDallema((state) => wishlistIds(state).includes(productId));
   const toggle = useDallema((state) => state.toggleWishlist);
+  const label = wished ? "Saved" : "Save";
   return (
-    <button
-      type="button"
-      aria-pressed={wished}
-      aria-label={wished ? "Remove from wishlist" : "Save to wishlist"}
-      onClick={() => toggle(productId)}
-      className={cn(
-        "inline-flex size-11 items-center justify-center rounded-full",
-        floating ? "bg-card/95 shadow-sm hover:bg-cream-deep" : "hover:bg-cream-deep",
-      )}
-    >
-      <Heart className={cn("size-5", wished ? "fill-danger text-danger" : "text-forest-ink")} />
-    </button>
+    <HoverTip label={label} side={floating ? "bottom" : "top"}>
+      <button
+        type="button"
+        aria-pressed={wished}
+        aria-label={wished ? "Remove from wishlist" : "Save to wishlist"}
+        onClick={() => toggle(productId)}
+        className={cn(
+          "inline-flex size-11 items-center justify-center rounded-full",
+          floating ? "bg-card/95 shadow-sm hover:bg-cream-deep" : "hover:bg-cream-deep",
+        )}
+      >
+        <Heart className={cn("size-5", wished ? "fill-danger text-danger" : "text-forest-ink")} />
+      </button>
+    </HoverTip>
   );
 }
 
@@ -35,13 +39,20 @@ export function ProductCard({ product }: { product: Product }) {
         <Link to="/p/$slug" params={{ slug: product.slug }} className="block" tabIndex={-1} aria-hidden="true">
           <ProductArt product={product} />
         </Link>
-        <div className="pointer-events-none absolute top-2.5 left-2.5">
+        <div className="absolute top-2.5 left-2.5">
           <DeptChip id={product.departmentId} solid />
         </div>
         {onOffer ? (
-          <span className="pointer-events-none absolute bottom-2.5 left-2.5 rounded-full bg-bake px-2.5 py-1 text-xs font-semibold text-on-bake">
-            Offer
-          </span>
+          <div className="absolute bottom-2.5 left-2.5">
+            <HoverTip label="Offer">
+              <span
+                aria-label="Offer"
+                className="inline-flex size-8 items-center justify-center rounded-full bg-bake text-on-bake"
+              >
+                <Tag className="size-4" aria-hidden="true" />
+              </span>
+            </HoverTip>
+          </div>
         ) : null}
         <div className="absolute top-1.5 right-1.5">
           <WishButton productId={product.id} floating />
@@ -83,29 +94,35 @@ export function ProductCard({ product }: { product: Product }) {
             </p>
           </div>
           {product.isMadeToOrder ? (
-            <Link
-              to="/p/$slug"
-              params={{ slug: product.slug }}
-              className="inline-flex min-h-12 items-center rounded-card bg-bake px-3 text-sm font-semibold text-on-bake"
-            >
-              Choose date
-            </Link>
+            <HoverTip label="Choose a date">
+              <Link
+                to="/p/$slug"
+                params={{ slug: product.slug }}
+                aria-label="Choose a date"
+                className="inline-flex size-12 items-center justify-center rounded-card bg-bake text-on-bake"
+              >
+                <CalendarDays className="size-5" aria-hidden="true" />
+              </Link>
+            </HoverTip>
           ) : (
-            <Button
-              className="px-3"
-              disabled={product.stockOnHand <= 0}
-              onClick={() => {
-                const result = add({
-                  productId: product.id,
-                  qty: 1,
-                  assembly: product.assemblyRequired,
-                });
-                if (!result.ok) toast.error(result.message);
-                else toast.success(`${result.data.name} added to your basket`);
-              }}
-            >
-              Add
-            </Button>
+            <HoverTip label={product.stockOnHand <= 0 ? "Out of stock" : "Add to basket"}>
+              <Button
+                className="size-12 px-0"
+                aria-label="Add to basket"
+                disabled={product.stockOnHand <= 0}
+                onClick={() => {
+                  const result = add({
+                    productId: product.id,
+                    qty: 1,
+                    assembly: product.assemblyRequired,
+                  });
+                  if (!result.ok) toast.error(result.message);
+                  else toast.success(`${result.data.name} added to your basket`);
+                }}
+              >
+                <Plus className="size-5" aria-hidden="true" />
+              </Button>
+            </HoverTip>
           )}
         </div>
       </div>

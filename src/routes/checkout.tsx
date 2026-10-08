@@ -5,6 +5,7 @@ import { ShopShell } from "@/components/shop-shell";
 import { Button, Empty, Field, Money } from "@/components/ui";
 import { inputClass } from "@/components/ui";
 import { furnitureSlots, grocerySlots } from "@/lib/format";
+import { startPaystackPayment } from "@/lib/paystack.functions";
 import { buildQuote } from "@/lib/pricing";
 import { useDallema } from "@/lib/store";
 
@@ -25,7 +26,7 @@ function CheckoutPage() {
   const [name, setName] = useState(customer?.name ?? "");
   const [phone, setPhone] = useState(customer?.phone ?? "");
   const [email, setEmail] = useState(customer?.email ?? "");
-  const [method, setMethod] = useState<"pickup" | "delivery">(address0 ? "delivery" : "pickup");
+  const [method, setMethod] = useState<"pickup" | "delivery">("delivery");
   const [zoneId, setZoneId] = useState(address0?.zoneId ?? settings.zones[0]?.id ?? "");
   const [address, setAddress] = useState(address0 ? `${address0.line}, ${address0.area}` : "");
   const slots = grocerySlots();
@@ -72,8 +73,11 @@ function CheckoutPage() {
 
   return (
     <ShopShell>
-      <h1 className="font-display text-4xl text-forest-ink">Checkout</h1>
-      <p className="mt-2 text-sm text-muted">
+      <h1 className="font-display text-4xl text-forest-ink">To your door</h1>
+      <p className="mt-2 max-w-xl text-sm text-muted">
+        Stay home. Pay online by card, transfer, or USSD. We pack it and ride it to you, often the same day if you order before 4pm.
+      </p>
+      <p className="mt-1 text-sm text-muted">
         {customer ? `Shopping as ${customer.name}. ` : "Guest checkout. "}
         <Link to="/account" className="font-semibold text-forest-ink underline">
           Change profile
@@ -99,13 +103,27 @@ function CheckoutPage() {
               notes,
               redeemPoints: redeem,
             });
-            setPlacing(false);
             if (!result.ok) {
+              setPlacing(false);
               toast.error(result.message);
               return;
             }
-            toast.success(`Order ${result.data.number} is on the desk`);
-            void navigate({ to: "/order/$number", params: { number: result.data.number } });
+            const pay = await startPaystackPayment({
+              data: {
+                number: result.data.number,
+                email,
+                phone,
+                origin: window.location.origin,
+              },
+            });
+            if (!pay.ok) {
+              setPlacing(false);
+              toast.error(pay.message);
+              void navigate({ to: "/order/$number", params: { number: result.data.number } });
+              return;
+            }
+            window.location.assign(pay.authorizationUrl);
+            window.location.assign(pay.authorizationUrl);
           })();
         }}
       >
@@ -113,7 +131,7 @@ function CheckoutPage() {
           <Field label="Name" id="name">
             <input id="name" required autoComplete="name" value={name} onChange={(event) => setName(event.target.value)} className={inputClass} />
           </Field>
-          <Field label="Phone" id="phone" hint="Required. We call this number if the loaf or the van is early.">
+          <Field label="Phone" id="phone" hint="Required. The rider calls this number when they are close.">
             <input
               id="phone"
               required
@@ -130,12 +148,12 @@ function CheckoutPage() {
           </Field>
           {preview.hasCounter ? (
             <fieldset>
-              <legend className="mb-2 text-sm font-medium">Groceries, bakery, and books</legend>
+              <legend className="mb-2 text-sm font-medium">How it reaches you</legend>
               <div className="grid gap-2 sm:grid-cols-2">
-                {(["pickup", "delivery"] as const).map((option) => (
+                {(["delivery", "pickup"] as const).map((option) => (
                   <label key={option} className="flex min-h-12 items-center gap-2 rounded-card border border-line bg-card px-3">
                     <input type="radio" name="method" checked={method === option} onChange={() => setMethod(option)} />
-                    {option === "pickup" ? "Collect at the shop · free" : "Deliver in Kaduna"}
+                    {option === "delivery" ? "To your door · fast" : "I’ll collect · free"}
                   </label>
                 ))}
               </div>
@@ -144,7 +162,7 @@ function CheckoutPage() {
             <p className="rounded-card bg-walnut-soft px-4 py-3 text-sm text-walnut-deep">This order is furniture only, so the van brings it. Grocery pickup does not apply.</p>
           )}
           {preview.hasCounter ? (
-            <Field label="Time" id="slot">
+            <Field label="When should it arrive?" id="slot">
               <select id="slot" className={inputClass} value={slotId} onChange={(event) => setSlotId(event.target.value)}>
                 {slots.map((slot) => (
                   <option key={slot.id} value={slot.id}>
@@ -236,11 +254,10 @@ function CheckoutPage() {
           </dl>
           {quote.promoError ? <p className="mt-2 text-sm text-danger">{quote.promoError}</p> : null}
           {promoCode ? <p className="mt-2 text-sm text-forest-ink">Code {promoCode}</p> : null}
-          <p className="mt-3 text-sm text-muted">Demo payment only. We mark the order paid and put it on the shop queue. No card is charged.</p>
+          <p className="mt-3 text-sm text-muted">You’ll finish on Paystack: card, bank transfer, or USSD. We pack after the payment clears, then bring it to your door.</p>
           <Button type="submit" className="mt-4 w-full" disabled={placing}>
-            {placing ? "Sending to the desk…" : "Place order"}
+            {placing ? "Opening Paystack…" : method === "pickup" && !preview.hasFurniture ? "Pay and I’ll collect" : "Pay and send it"}
           </Button>
-          <p className="mt-2 text-sm text-muted">Pay when you collect, or tell the shop on WhatsApp. The order shows on the staff desk, not only on this phone.</p>
         </aside>
       </form>
     </ShopShell>

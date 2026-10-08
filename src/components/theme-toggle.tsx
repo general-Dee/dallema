@@ -1,5 +1,6 @@
 import { Moon, Sun } from "lucide-react";
 import { useEffect, useState } from "react";
+import { HoverTip } from "@/components/hover-tip";
 import { cn } from "@/lib/cn";
 
 export const THEME_STORAGE_KEY = "dallema-theme";
@@ -22,22 +23,25 @@ export function ThemeToggle({ onForest = false }: { onForest?: boolean }) {
     return () => window.removeEventListener("dallema-theme", sync);
   }, []);
 
+  const label = dark ? "Light mode" : "Dark mode";
   return (
-    <button
-      type="button"
-      aria-pressed={dark}
-      aria-label={dark ? "Switch to light mode" : "Switch to dark mode"}
-      onClick={() => {
-        const next = !document.documentElement.classList.contains("dark");
-        applyTheme(next);
-        setDark(next);
-      }}
-      className={cn(
-        "inline-flex size-12 shrink-0 items-center justify-center rounded-card",
-        onForest ? "text-cream hover:bg-forest-deep" : "text-forest-ink hover:bg-forest-soft",
-      )}
-    >
-      {dark ? <Sun className="size-5" aria-hidden="true" /> : <Moon className="size-5" aria-hidden="true" />}
-    </button>
+    <HoverTip label={label} side={onForest ? "bottom" : "top"}>
+      <button
+        type="button"
+        aria-pressed={dark}
+        aria-label={dark ? "Switch to light mode" : "Switch to dark mode"}
+        onClick={() => {
+          const next = !document.documentElement.classList.contains("dark");
+          applyTheme(next);
+          setDark(next);
+        }}
+        className={cn(
+          "inline-flex size-12 shrink-0 items-center justify-center rounded-card",
+          onForest ? "text-cream hover:bg-forest-deep" : "text-forest-ink hover:bg-forest-soft",
+        )}
+      >
+        {dark ? <Sun className="size-5" aria-hidden="true" /> : <Moon className="size-5" aria-hidden="true" />}
+      </button>
+    </HoverTip>
   );
 }

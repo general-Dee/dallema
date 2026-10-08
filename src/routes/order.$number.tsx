@@ -2,10 +2,11 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { ShopShell } from "@/components/shop-shell";
-import { DeptChip, Empty, Money, StatusPill } from "@/components/ui";
+import { Button, DeptChip, Empty, Money, StatusPill } from "@/components/ui";
 import { STATUS_LABEL } from "@/lib/catalog";
 import { formatWhen, orderWhatsAppText, whatsappHref } from "@/lib/format";
 import { fetchSharedOrder } from "@/lib/orders.functions";
+import { confirmPaystackPayment, startPaystackPayment } from "@/lib/paystack.functions";
 import { useDallema } from "@/lib/store";
 
 export const Route = createFileRoute("/order/$number")({
@@ -19,6 +20,23 @@ function OrderPage() {
   const customer = useDallema((state) => state.customers.find((entry) => entry.id === order?.customerId) ?? null);
   const settings = useDallema((state) => state.settings);
   const [missing, setMissing] = useState(false);
+  const [paying, setPaying] = useState(false);
+  useEffect(() => {
+    const reference = new URLSearchParams(window.location.search).get("reference");
+    if (!reference) return;
+    let stop = false;
+    void confirmPaystackPayment({ data: { reference } }).then((result) => {
+      if (stop) return;
+      window.history.replaceState({}, "", window.location.pathname);
+      if (result.ok && result.order) {
+        merge([result.order]);
+        toast.success("Payment received. We’re packing your order.");
+      } else if (!result.ok) toast.error(result.message);
+    });
+    return () => {
+      stop = true;
+    };
+  }, [merge]);
   useEffect(() => {
     let stop = false;
     async function pull() {
@@ -72,8 +90,38 @@ function OrderPage() {
       <p className="mt-3 max-w-xl text-muted">{next}</p>
       <p className="mt-2 text-sm text-muted">Placed {formatWhen(order.createdAt)} · {order.channel === "pos" ? "Till" : "Web"} · {order.paymentStatus === "unpaid" ? "Awaiting payment" : "Paid"}</p>
       {order.paymentStatus === "unpaid" ? (
-        <p className="mt-2 max-w-xl text-sm text-muted">Pay when you collect, or send the transfer and say so on WhatsApp. The desk marks it paid.</p>
-      ) : null}
+        <div className="mt-4">
+          <p className="max-w-xl text-sm text-muted">Payment is on Paystack: card, transfer, or USSD. The rider leaves once it clears.</p>
+          <Button
+            className="mt-3"
+            disabled={paying}
+            onClick={() => {
+              setPaying(true);
+              void startPaystackPayment({
+                data: {
+                  number: order.number,
+                  email: order.contactEmail,
+                  phone: order.contactPhone,
+                  origin: window.location.origin,
+                },
+              }).then((pay) => {
+                if (!pay.ok) {
+                  setPaying(false);
+                  toast.error(pay.message);
+                  return;
+                }
+                window.location.assign(pay.authorizationUrl);
+              });
+            }}
+          >
+            {paying ? "Opening Paystack…" : "Pay now"}
+          </Button>
+        </div>
+      ) : (
+        <p className="mt-2 text-sm text-forest-ink">
+          {order.fulfillment === "pickup" ? "Paid. We’ll have it ready at the shop." : "Paid. We’re getting it to your door."}
+        </p>
+      )}
       {whatsappHref(settings.phone, orderWhatsAppText(order)) ? (
         <a
           href={whatsappHref(settings.phone, orderWhatsAppText(order))}

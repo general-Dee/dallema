@@ -1,10 +1,12 @@
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
-import { Search, ShoppingBag, UserRound } from "lucide-react";
+import { KeyRound, MapPin, Phone, Search, ShoppingBag, Tag, UserRound } from "lucide-react";
 import { useEffect, useState, type FormEvent, type ReactNode } from "react";
+import { HoverTip } from "@/components/hover-tip";
 import { Logo } from "@/components/logo";
+import { DeptIcon } from "@/components/product-art";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { inputClass } from "@/components/ui";
-import { DEPARTMENTS } from "@/lib/catalog";
+import { DEPARTMENTS, tone } from "@/lib/catalog";
 import { whatsappHref } from "@/lib/format";
 import { useDallema } from "@/lib/store";
 
@@ -43,13 +45,27 @@ export function ShopShell({ children }: { children: ReactNode }) {
           <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 py-2 text-xs">
             <p className="truncate">{settings.address}</p>
             {whatsapp ? (
-              <a href={whatsapp} target="_blank" rel="noopener noreferrer" className="shrink-0 font-semibold underline decoration-cream/40 underline-offset-2">
-                WhatsApp
-              </a>
+              <HoverTip label="WhatsApp" side="bottom">
+                <a
+                  href={whatsapp}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="WhatsApp"
+                  className="inline-flex size-8 shrink-0 items-center justify-center rounded-full bg-[#25D366] text-[#072016]"
+                >
+                  <WhatsAppIcon className="size-4" />
+                </a>
+              </HoverTip>
             ) : (
-              <a className="shrink-0 font-semibold underline decoration-cream/40 underline-offset-2" href={`tel:${settings.phone.replace(/\s/g, "")}`}>
-                Call
-              </a>
+              <HoverTip label="Call the shop" side="bottom">
+                <a
+                  className="inline-flex size-8 shrink-0 items-center justify-center rounded-full bg-cream text-forest"
+                  aria-label="Call the shop"
+                  href={`tel:${settings.phone.replace(/\s/g, "")}`}
+                >
+                  <Phone className="size-4" aria-hidden="true" />
+                </a>
+              </HoverTip>
             )}
           </div>
         </div>
@@ -76,26 +92,37 @@ export function ShopShell({ children }: { children: ReactNode }) {
               />
             </div>
           </form>
+          <Link
+            to="/"
+            hash="departments"
+            className="hidden h-12 shrink-0 items-center rounded-card bg-forest px-3 text-sm font-semibold text-cream hover:bg-forest-deep sm:inline-flex"
+          >
+            Shop from home
+          </Link>
           <ThemeToggle />
-          <Link
-            to="/account"
-            aria-label={customer ? `Account, ${customer.name}` : "Account"}
-            className="inline-flex size-12 items-center justify-center rounded-card text-forest-ink hover:bg-forest-soft"
-          >
-            <UserRound className="size-5" />
-          </Link>
-          <Link
-            to="/cart"
-            aria-label={`Basket, ${count} items`}
-            className="relative inline-flex size-12 items-center justify-center rounded-card text-forest-ink hover:bg-forest-soft"
-          >
-            <ShoppingBag className="size-5" />
-            {count > 0 ? (
-              <span className="absolute top-1 right-1 inline-flex min-w-5 items-center justify-center rounded-full bg-forest px-1 text-xs font-semibold text-cream">
-                {count}
-              </span>
-            ) : null}
-          </Link>
+          <HoverTip label={customer ? customer.name : "Account"}>
+            <Link
+              to="/account"
+              aria-label={customer ? `Account, ${customer.name}` : "Account"}
+              className="inline-flex size-12 items-center justify-center rounded-card text-forest-ink hover:bg-forest-soft"
+            >
+              <UserRound className="size-5" />
+            </Link>
+          </HoverTip>
+          <HoverTip label={count > 0 ? `Basket, ${count}` : "Basket"}>
+            <Link
+              to="/cart"
+              aria-label={`Basket, ${count} items`}
+              className="relative inline-flex size-12 items-center justify-center rounded-card text-forest-ink hover:bg-forest-soft"
+            >
+              <ShoppingBag className="size-5" />
+              {count > 0 ? (
+                <span className="absolute top-1 right-1 inline-flex min-w-5 items-center justify-center rounded-full bg-forest px-1 text-xs font-semibold text-cream">
+                  {count}
+                </span>
+              ) : null}
+            </Link>
+          </HoverTip>
         </div>
       </header>
       <main id="main" className="mx-auto w-full max-w-6xl flex-1 px-4 py-6">
@@ -135,49 +162,57 @@ export function ShopShell({ children }: { children: ReactNode }) {
                   {zone.name}: ₦{zone.fee.toLocaleString("en-NG")} · from ₦{zone.minimum.toLocaleString("en-NG")}
                 </li>
               ))}
-              <li>Pickup at the shop is free.</li>
+              <li>To your door, often the same day if you order before 4pm.</li>
+              <li>Pickup at the shop is free, if you would rather come in.</li>
               <li>Furniture delivery from ₦{settings.furnitureDeliveryFee.toLocaleString("en-NG")}.</li>
             </ul>
           </div>
           <div>
             <p className="text-sm font-semibold tracking-wide uppercase">Departments</p>
-            <ul className="mt-2 space-y-1 text-sm">
+            <div className="mt-3 flex flex-wrap gap-2">
               {DEPARTMENTS.map((dept) => (
-                <li key={dept.id}>
-                  <Link to="/shop/$dept" params={{ dept: dept.slug }} className="underline decoration-cream/40 underline-offset-2">
-                    {dept.name}
+                <HoverTip key={dept.id} label={dept.name} side="top">
+                  <Link
+                    to="/shop/$dept"
+                    params={{ dept: dept.slug }}
+                    aria-label={dept.name}
+                    className={`inline-flex size-11 items-center justify-center rounded-full ${tone(dept.id).solid}`}
+                  >
+                    <DeptIcon id={dept.id} className="size-5" />
                   </Link>
-                </li>
+                </HoverTip>
               ))}
-              <li>
-                <Link to="/offers" className="underline decoration-cream/40 underline-offset-2">
-                  Offers
+              <HoverTip label="Offers">
+                <Link to="/offers" aria-label="Offers" className="inline-flex size-11 items-center justify-center rounded-full bg-bake text-on-bake">
+                  <Tag className="size-5" aria-hidden="true" />
                 </Link>
-              </li>
-              <li>
-                <Link to="/store" className="underline decoration-cream/40 underline-offset-2">
-                  Store info
+              </HoverTip>
+              <HoverTip label="Store info">
+                <Link to="/store" aria-label="Store info" className="inline-flex size-11 items-center justify-center rounded-full bg-cream text-forest">
+                  <MapPin className="size-5" aria-hidden="true" />
                 </Link>
-              </li>
-              <li>
-                <Link to="/staff/login" className="underline decoration-cream/40 underline-offset-2">
-                  Staff entrance
+              </HoverTip>
+              <HoverTip label="Staff entrance">
+                <Link to="/staff/login" aria-label="Staff entrance" className="inline-flex size-11 items-center justify-center rounded-full bg-cream text-forest">
+                  <KeyRound className="size-5" aria-hidden="true" />
                 </Link>
-              </li>
-            </ul>
+              </HoverTip>
+            </div>
           </div>
         </div>
       </footer>
       {whatsapp ? (
-        <a
-          href={whatsapp}
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label={`WhatsApp ${settings.storeName}`}
-          className="fixed right-4 bottom-24 z-40 inline-flex size-14 items-center justify-center rounded-full bg-[#25D366] text-[#072016] shadow-card lg:bottom-6"
-        >
-          <WhatsAppIcon className="size-7" />
-        </a>
+        <HoverTip label="WhatsApp the shop" side="left" className="fixed right-4 bottom-24 z-40 lg:bottom-6">
+          <a
+            href={whatsapp}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={`WhatsApp ${settings.storeName}`}
+            className="inline-flex size-14 items-center justify-center rounded-full bg-[#25D366] text-[#072016] shadow-card"
+          >
+            <WhatsAppIcon className="size-7" />
+          </a>
+        </HoverTip>
       ) : null}
     </div>
   );

@@ -1,11 +1,12 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import type { ReactNode } from "react";
+import { HoverTip } from "@/components/hover-tip";
 import { ShopShell } from "@/components/shop-shell";
 import { ProductArt, DeptIcon } from "@/components/product-art";
 import { ProductCard } from "@/components/product-card";
 import { Button } from "@/components/ui";
 import { DEPARTMENTS, tone } from "@/lib/catalog";
-import { naira } from "@/lib/format";
+import { naira, whatsappHref } from "@/lib/format";
 import { useDallema } from "@/lib/store";
 
 const DEPT_LINE: Record<string, string> = {
@@ -32,32 +33,34 @@ function Home() {
     products.find((product) => product.featured) ??
     products[0];
   const picks = products.filter((product) => product.departmentId === "bookstore" && product.featured).slice(0, 4);
+  const ask = whatsappHref(settings.phone, `Hello ${settings.storeName}, I would like to shop for the week.`);
 
   return (
     <ShopShell>
       <section>
         <div className="grid items-center gap-8 lg:grid-cols-[0.92fr_1.08fr]">
           <div>
-            <p className="text-xs font-semibold tracking-[0.16em] text-muted uppercase">{settings.address}</p>
+            <p className="text-xs font-semibold tracking-[0.16em] text-muted uppercase">Stay in. We ride.</p>
             <h1 className="mt-3 max-w-xl font-display text-4xl leading-[1.02] text-forest-ink sm:text-6xl">
-              Shop food, fresh bakes, furniture, and books in one place.
+              Shop from home. We bring it fast.
             </h1>
             <p className="mt-4 max-w-lg text-lg text-muted">
-              One neighbourhood shop in Kaduna. Groceries for the week, bread from this morning, a chair that fits the room, and the book for next term.
+              Groceries, fresh bread, and school books, ordered from the comfort of your house. Send it before 4pm and Kaduna delivery can be the same day.
             </p>
             <div className="mt-6 flex flex-wrap gap-3">
               <a href="#departments">
-                <Button>Shop now</Button>
+                <Button>Shop from home</Button>
               </a>
-              <Link to="/offers">
-                <Button variant="secondary">Today’s deals</Button>
-              </Link>
+              {ask ? (
+                <a href={ask} target="_blank" rel="noopener noreferrer">
+                  <Button variant="secondary">Ask on WhatsApp</Button>
+                </a>
+              ) : (
+                <Link to="/offers">
+                  <Button variant="secondary">Today’s deals</Button>
+                </Link>
+              )}
             </div>
-            <ul className="mt-5 flex flex-wrap gap-x-5 gap-y-1 text-sm text-muted">
-              <li>Free pickup at the shop</li>
-              <li>Delivery across Kaduna</li>
-              <li>Cakes need a day’s notice</li>
-            </ul>
             <p className="mt-4 max-w-lg rounded-2xl bg-bake-soft px-4 py-3 text-sm text-soil">{settings.bannerText}</p>
           </div>
           {hero ? (
@@ -68,9 +71,7 @@ function Home() {
             >
               <ProductArt product={hero} className="aspect-[5/4] sm:aspect-auto sm:min-h-72" />
               <div className={`flex flex-col justify-center p-5 ${tone(hero.departmentId).panel}`}>
-                <p className="text-xs font-semibold tracking-wide uppercase">
-                  {hero.departmentId === "furniture" ? "On the floor" : "From the counter"}
-                </p>
+                <p className="text-xs font-semibold tracking-wide uppercase">To your door</p>
                 <h2 className="mt-2 font-display text-3xl leading-tight">{hero.name}</h2>
                 <p className="mt-2 text-sm">{hero.shortDescription}</p>
                 <p className="mt-3 text-xl font-semibold">
@@ -84,32 +85,65 @@ function Home() {
             </Link>
           ) : null}
         </div>
-        <div id="departments" className="mt-8 grid scroll-mt-28 grid-cols-2 gap-3 sm:grid-cols-4">
-          {DEPARTMENTS.map((dept) => (
-            <Link
-              key={dept.id}
-              to="/shop/$dept"
-              params={{ dept: dept.slug }}
-              className="lift flex min-h-20 items-center gap-3 rounded-2xl border border-line bg-card px-3 py-3 shadow-card"
-            >
-              <span className={`grid size-11 shrink-0 place-items-center rounded-full ${tone(dept.id).panel}`}>
-                <DeptIcon id={dept.id} className="size-5" />
-              </span>
-              <span>
-                <span className="block text-sm font-semibold leading-tight text-soil">{dept.name}</span>
-                <span className="mt-0.5 block text-xs text-muted">{DEPT_LINE[dept.id]}</span>
-              </span>
-            </Link>
+
+        <div className="mt-10 grid gap-3 sm:grid-cols-3">
+          {[
+            ["1", "Choose", "From the sofa. Groceries, bread, a chair, the school list. One basket."],
+            ["2", "Pay online", "Card, transfer, or USSD on Paystack. No cash at the door."],
+            ["3", "We bring it", "Fast, to your address in Kaduna. Same day if you order before 4pm."],
+          ].map(([step, title, body]) => (
+            <div key={step} className="rounded-2xl border border-line bg-card px-4 py-4 shadow-card">
+              <p className="font-display text-3xl text-forest-ink">{step}</p>
+              <h2 className="mt-1 font-display text-2xl text-soil">{title}</h2>
+              <p className="mt-1 text-sm text-muted">{body}</p>
+            </div>
           ))}
+        </div>
+
+        <div id="departments" className="mt-10 scroll-mt-28">
+          <h2 className="font-display text-3xl text-forest-ink">What should come home?</h2>
+          <p className="mt-1 max-w-xl text-sm text-muted">Pick the part of the week that is missing. You can mix all four.</p>
+          <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
+            {DEPARTMENTS.map((dept) => (
+              <HoverTip key={dept.id} label={dept.name} side="bottom" className="w-full">
+                <Link
+                  to="/shop/$dept"
+                  params={{ dept: dept.slug }}
+                  aria-label={dept.name}
+                  className="lift flex min-h-28 w-full flex-col items-center justify-center gap-2 rounded-2xl border border-line bg-card px-3 py-4 text-center shadow-card"
+                >
+                  <span className={`grid size-14 shrink-0 place-items-center rounded-full ${tone(dept.id).panel}`}>
+                    <DeptIcon id={dept.id} className="size-7" />
+                  </span>
+                  <span className="hidden text-sm font-semibold text-soil [@media(hover:none)]:block">{dept.name}</span>
+                  <span className="text-xs text-muted">{DEPT_LINE[dept.id]}</span>
+                </Link>
+              </HoverTip>
+            ))}
+          </div>
         </div>
       </section>
 
+      <section className="mt-12 rounded-2xl border border-line bg-card px-5 py-6">
+        <h2 className="font-display text-3xl text-forest-ink">Going out is the hard way.</h2>
+        <p className="mt-2 max-w-2xl text-muted">
+          The heat, the traffic, a second stop for bread, a third for the book list. Stay home. The rider does that part.
+        </p>
+      </section>
+
       <Strip
-        title="Fresh from the bakery today"
+        title="Bread that is ready today"
         action={
-          <Link to="/shop/$dept" params={{ dept: "bakery" }} className="text-sm font-semibold text-forest-ink underline">
-            See the bakery
-          </Link>
+          <HoverTip label="See the bakery">
+            <Link
+              to="/shop/$dept"
+              params={{ dept: "bakery" }}
+              aria-label="See the bakery"
+              className="inline-flex size-11 items-center justify-center rounded-full bg-bake-soft text-bake-ink"
+            >
+              <DeptIcon id="bakery" className="size-5" />
+            </Link>
+          </HoverTip>
         }
       >
         {bakery.map((product) => (
@@ -117,24 +151,37 @@ function Home() {
         ))}
       </Strip>
       <Strip
-        title="This week’s supermarket offers"
+        title="Fill the cupboard for less"
         action={
-          <Link to="/shop/$dept" params={{ dept: "supermarket" }} className="text-sm font-semibold text-forest-ink underline">
-            All groceries
-          </Link>
+          <HoverTip label="All groceries">
+            <Link
+              to="/shop/$dept"
+              params={{ dept: "supermarket" }}
+              aria-label="All groceries"
+              className="inline-flex size-11 items-center justify-center rounded-full bg-forest-soft text-forest-ink"
+            >
+              <DeptIcon id="supermarket" className="size-5" />
+            </Link>
+          </HoverTip>
         }
       >
         {offers.map((product) => (
           <ProductCard key={product.id} product={product} />
         ))}
       </Strip>
-
       <Strip
-        title="From the bookstore"
+        title="The term can start with the right books"
         action={
-          <Link to="/shop/$dept" params={{ dept: "bookstore" }} className="text-sm font-semibold text-forest-ink underline">
-            Browse the bookstore
-          </Link>
+          <HoverTip label="Browse the bookstore">
+            <Link
+              to="/shop/$dept"
+              params={{ dept: "bookstore" }}
+              aria-label="Browse the bookstore"
+              className="inline-flex size-11 items-center justify-center rounded-full bg-ink-soft text-ink"
+            >
+              <DeptIcon id="bookstore" className="size-5" />
+            </Link>
+          </HoverTip>
         }
       >
         {picks.map((product) => (
@@ -143,19 +190,30 @@ function Home() {
       </Strip>
 
       <section className="mt-12 rounded-2xl bg-forest px-6 py-8 text-cream">
-        <h2 className="font-display text-3xl">Points for the regulars</h2>
-        <p className="mt-2 max-w-xl text-cream/85">
-          You earn 1 point for every ₦{settings.earnNairaPerPoint} once an order is completed. 100 points are worth ₦
-          {settings.nairaPer100Points}. Redeem from {settings.minRedeemPoints} points.
+        <p className="text-xs font-semibold tracking-[0.16em] text-cream/70 uppercase">Delivered to your door</p>
+        <h2 className="mt-2 max-w-xl font-display text-3xl">You shop where you are. We ride the rest.</h2>
+        <p className="mt-3 max-w-xl text-cream/85">
+          Dalema packs the supermarket, the oven, and the bookstore, then brings them across Kaduna. {settings.hours}. Furniture still needs its own van, from two days out.
         </p>
-        <p className="mt-3 text-sm">
-          {customer
-            ? `You’re shopping as ${customer.name}. Share ${customer.referralCode} when you send a neighbour.`
-            : "Pick a household profile in Account to keep points on this device."}
+        <div className="mt-6 flex flex-wrap gap-3">
+          <a href="#departments">
+            <Button variant="secondary">Shop from home</Button>
+          </a>
+          {ask ? (
+            <a
+              href={ask}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex min-h-12 items-center rounded-card bg-[#25D366] px-4 text-base font-semibold text-[#072016]"
+            >
+              Ask on WhatsApp
+            </a>
+          ) : null}
+        </div>
+        <p className="mt-6 max-w-xl text-sm text-cream/80">
+          Come back and the points add up: 1 point for every ₦{settings.earnNairaPerPoint} once an order is completed. 100 points are worth ₦{settings.nairaPer100Points}.
+          {customer ? ` You’re shopping as ${customer.name}.` : " Open Account if you want the points kept on this phone."}
         </p>
-        <Link to="/account" className="mt-4 inline-flex">
-          <Button variant="secondary">See your points</Button>
-        </Link>
       </section>
     </ShopShell>
   );
