@@ -19,7 +19,7 @@ function SettingsPage() {
     <div>
       <h1 className="font-display text-4xl text-forest-ink">Settings</h1>
       <p className="mt-2 max-w-xl text-sm text-muted">
-        These details show on the shop footer. Everything in this demo is saved on this device, so a refresh keeps products, orders, and these settings.
+        These details, the catalogue, prices, and stock are saved for the whole shop. A change here shows on the site, not only on this phone.
       </p>
       <form
         className="mt-4 max-w-2xl space-y-3"

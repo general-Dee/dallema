@@ -11,7 +11,8 @@ import {
   tierFor,
   uid,
 } from "./format";
-import { saveSharedOrder, updateSharedOrder } from "./orders.functions";
+import { saveDeskOrder, saveSharedOrder, updateSharedOrder } from "./orders.functions";
+import type { ShopCatalog, ShopDesk } from "./shop.functions";
 import { breakdownOf, buildQuote, resolveLines, stockError } from "./pricing";
 import { createSeed, type SeedData } from "./seed";
 import type {
@@ -93,6 +94,7 @@ interface ShopState extends SeedData {
   updateOrderStatus: (orderId: string, status: OrderStatus) => Result<{ number: string }>;
   markOrderPaid: (orderId: string) => Result<{ number: string }>;
   mergeSharedOrders: (incoming: Order[]) => void;
+  applyRemoteShop: (input: { catalog?: ShopCatalog | null; desk?: ShopDesk | null }) => void;
   posCheckout: (input: PosInput) => Result<{ number: string }>;
   adjustStock: (productId: string, delta: number, reason: StockReason, note: string) => Result<null>;
   saveProduct: (product: Product, isNew: boolean) => Result<null>;
@@ -242,6 +244,8 @@ function jobsForOrder(order: Order): DeliveryJob[] {
   }
   return jobs;
 }
+
+export let applyingRemoteShop = false;
 
 export const useDallema = create<ShopState>()(
   persist(
@@ -550,6 +554,32 @@ export const useDallema = create<ShopState>()(
           orders: [...byKey.values()].sort((a, b) => b.createdAt.localeCompare(a.createdAt)),
         });
       },
+      applyRemoteShop: ({ catalog, desk }) => {
+        applyingRemoteShop = true;
+        set({
+          ...(catalog
+            ? {
+                products: catalog.products,
+                settings: catalog.settings,
+                promotions: catalog.promotions,
+                schoolLists: catalog.schoolLists,
+              }
+            : {}),
+          ...(desk
+            ? {
+                customers: desk.customers,
+                ledger: desk.ledger,
+                suppliers: desk.suppliers,
+                purchaseOrders: desk.purchaseOrders,
+                bakeryJobs: desk.bakeryJobs,
+                deliveryJobs: desk.deliveryJobs,
+                stockLog: desk.stockLog,
+                nextPoSeq: desk.nextPoSeq,
+              }
+            : {}),
+        });
+        applyingRemoteShop = false;
+      },
       posCheckout: (input) => {
         const state = get();
         if (input.lines.length === 0) return { ok: false, message: "Add at least one item to the ticket." };
@@ -625,6 +655,7 @@ export const useDallema = create<ShopState>()(
           nextOrderSeq: state.nextOrderSeq + 1,
           stockLog: [...movements, ...state.stockLog].slice(0, 80),
         });
+        void saveDeskOrder({ data: { deskKey: DEMO_STAFF.password, order } }).catch(() => undefined);
         return { ok: true, data: { number } };
       },
       adjustStock: (productId, delta, reason, note) => {
@@ -868,6 +899,7 @@ export const useDallema = create<ShopState>()(
           orders: [order, ...state.orders],
           nextOrderSeq: state.nextOrderSeq + 1,
         });
+        void saveDeskOrder({ data: { deskKey: DEMO_STAFF.password, order } }).catch(() => undefined);
         return { ok: true, data: { number, skipped } };
       },
       adjustPoints: (customerId, delta, reason) => {

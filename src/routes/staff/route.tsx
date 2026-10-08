@@ -3,7 +3,8 @@ import { useEffect } from "react";
 import { StaffShell } from "@/components/staff-shell";
 import { DEMO_STAFF } from "@/lib/catalog";
 import { listSharedOrders } from "@/lib/orders.functions";
-import { useDallema } from "@/lib/store";
+import { loadShopDesk, saveShopDocs } from "@/lib/shop.functions";
+import { applyingRemoteShop, useDallema } from "@/lib/store";
 
 export const Route = createFileRoute("/staff")({
   component: StaffLayout,
@@ -32,18 +33,76 @@ function StaffLayout() {
 
 function DeskSync() {
   const merge = useDallema((state) => state.mergeSharedOrders);
+  const apply = useDallema((state) => state.applyRemoteShop);
   useEffect(() => {
     let stop = false;
-    async function pull() {
-      const result = await listSharedOrders({ data: { deskKey: DEMO_STAFF.password } });
+    let timer = 0;
+    let unsub = () => {};
+    const deskKey = DEMO_STAFF.password;
+
+    function snapshot() {
+      const state = useDallema.getState();
+      return {
+        deskKey,
+        catalog: {
+          products: state.products,
+          settings: state.settings,
+          promotions: state.promotions,
+          schoolLists: state.schoolLists,
+        },
+        desk: {
+          customers: state.customers,
+          ledger: state.ledger,
+          suppliers: state.suppliers,
+          purchaseOrders: state.purchaseOrders,
+          bakeryJobs: state.bakeryJobs,
+          deliveryJobs: state.deliveryJobs,
+          stockLog: state.stockLog,
+          nextPoSeq: state.nextPoSeq,
+        },
+      };
+    }
+
+    void (async () => {
+      const shop = await loadShopDesk({ data: { deskKey } });
+      if (stop) return;
+      if (shop.ok && shop.catalog) apply({ catalog: shop.catalog, desk: shop.desk });
+      else if (shop.ok) await saveShopDocs({ data: snapshot() });
+      unsub = useDallema.subscribe((state, prev) => {
+        if (applyingRemoteShop || !state.staff) return;
+        const changed =
+          state.products !== prev.products ||
+          state.settings !== prev.settings ||
+          state.promotions !== prev.promotions ||
+          state.schoolLists !== prev.schoolLists ||
+          state.customers !== prev.customers ||
+          state.ledger !== prev.ledger ||
+          state.suppliers !== prev.suppliers ||
+          state.purchaseOrders !== prev.purchaseOrders ||
+          state.bakeryJobs !== prev.bakeryJobs ||
+          state.deliveryJobs !== prev.deliveryJobs ||
+          state.stockLog !== prev.stockLog ||
+          state.nextPoSeq !== prev.nextPoSeq;
+        if (!changed) return;
+        window.clearTimeout(timer);
+        timer = window.setTimeout(() => {
+          void saveShopDocs({ data: snapshot() }).catch(() => undefined);
+        }, 500);
+      });
+    })();
+
+    async function pullOrders() {
+      const result = await listSharedOrders({ data: { deskKey } });
       if (!stop && result.ok) merge(result.orders);
     }
-    void pull();
-    const timer = window.setInterval(() => void pull(), 12000);
+    void pullOrders();
+    const poll = window.setInterval(() => void pullOrders(), 12000);
     return () => {
       stop = true;
-      window.clearInterval(timer);
+      unsub();
+      window.clearTimeout(timer);
+      window.clearInterval(poll);
     };
-  }, [merge]);
+  }, [apply, merge]);
   return null;
 }

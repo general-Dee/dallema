@@ -51,6 +51,26 @@ export const saveSharedOrder = createServerFn({ method: "POST" })
     return { ok: true as const, order };
   });
 
+export const saveDeskOrder = createServerFn({ method: "POST" })
+  .validator((input: { deskKey: string; order: Order }) => input)
+  .handler(async ({ data }) => {
+    if (!deskOk(data.deskKey)) return { ok: false as const, message: "Staff sign-in required." };
+    const order = asOrder(data.order);
+    if (!order) return { ok: false as const, message: "That order could not be read." };
+    const { getSql } = await import("@/lib/db");
+    const sql = await getSql();
+    await sql.query(
+      `insert into shop_orders (id, number, status, payment_status, payload)
+       values ($1, $2, $3, $4, $5::jsonb)
+       on conflict (id) do update set
+         status = excluded.status,
+         payment_status = excluded.payment_status,
+         payload = excluded.payload`,
+      [order.id, order.number, order.status, order.paymentStatus, JSON.stringify(order)],
+    );
+    return { ok: true as const, order };
+  });
+
 export const listSharedOrders = createServerFn({ method: "POST" })
   .validator((input: { deskKey: string }) => input)
   .handler(async ({ data }) => {

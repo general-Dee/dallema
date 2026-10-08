@@ -4,6 +4,7 @@ import { Toaster } from "sonner";
 import { PreviewHostBridge } from "@/components/preview-host-bridge";
 import { themeBootScript } from "@/components/theme-toggle";
 import { AuthProvider } from "@/lib/auth/provider";
+import { loadShopCatalog } from "@/lib/shop.functions";
 import { useDallema } from "@/lib/store";
 import appCss from "../styles.css?url";
 
@@ -45,9 +46,27 @@ function ThemeToaster() {
 
 function Root() {
   useEffect(() => {
-    const mark = () => useDallema.setState({ hydrated: true });
-    const pending = useDallema.persist.rehydrate();
-    void Promise.resolve(pending).then(mark, mark);
+    let stop = false;
+    async function pullCatalog() {
+      const result = await loadShopCatalog({ data: {} });
+      if (!stop && result.ok && result.catalog) useDallema.getState().applyRemoteShop({ catalog: result.catalog });
+    }
+    void (async () => {
+      await Promise.resolve(useDallema.persist.rehydrate());
+      try {
+        await pullCatalog();
+      } catch {
+        // The shop still opens from this browser if the database is briefly unreachable.
+      }
+      if (!stop) useDallema.setState({ hydrated: true });
+    })();
+    const timer = window.setInterval(() => {
+      void pullCatalog().catch(() => undefined);
+    }, 15000);
+    return () => {
+      stop = true;
+      window.clearInterval(timer);
+    };
   }, []);
   return (
     <html lang="en" suppressHydrationWarning>
