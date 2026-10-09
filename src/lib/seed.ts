@@ -671,7 +671,7 @@ export function createSeed(): SeedData {
   const settings: Settings = {
     storeName: "Dalema",
     address: "No. 70 Isa Kaita Road, Ungwan Munchi, Kaduna North",
-    phone: "0803 555 0142",
+    phone: "+234 816 5510 842",
     hours: "Monday to Saturday 8:00–20:00 · Sunday 10:00–16:00 · Bakery counter from 7:00",
     zones: [
       { id: "z-near", name: "Kaduna North", minKm: 0, maxKm: 3, fee: 800, minimum: 3000 },
