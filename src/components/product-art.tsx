@@ -1,4 +1,5 @@
-import { Armchair, BookOpen, Croissant, ShoppingBasket, type LucideIcon } from "lucide-react";
+import { Armchair, BookOpen, ShoppingBasket, type LucideIcon } from "lucide-react";
+import { Loaf } from "@/components/loaf-icon";
 import { ProductMark } from "@/components/product-marks";
 import { tone } from "@/lib/catalog";
 import { cn } from "@/lib/cn";
@@ -6,7 +7,7 @@ import type { DeptId, Product } from "@/lib/types";
 
 const ICONS: Record<DeptId, LucideIcon> = {
   supermarket: ShoppingBasket,
-  bakery: Croissant,
+  bakery: Loaf,
   furniture: Armchair,
   bookstore: BookOpen,
 };

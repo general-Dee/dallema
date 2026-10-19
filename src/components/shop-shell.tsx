@@ -7,7 +7,7 @@ import { DeptIcon } from "@/components/product-art";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { inputClass } from "@/components/ui";
 import { DEPARTMENTS, tone } from "@/lib/catalog";
-import { whatsappHref } from "@/lib/format";
+import { shopWhatsAppHref } from "@/lib/format";
 import { useDallema } from "@/lib/store";
 
 export function ShopShell({ children }: { children: ReactNode }) {
@@ -30,7 +30,7 @@ export function ShopShell({ children }: { children: ReactNode }) {
     void navigate({ to: "/search", search: { q: query } });
   }
 
-  const whatsapp = whatsappHref(settings.phone, `Hello ${settings.storeName}, I would like to ask about an order.`);
+  const whatsapp = shopWhatsAppHref(`Hello ${settings.storeName}, I would like to ask about an order.`);
 
   return (
     <div className="flex min-h-dvh flex-col">
@@ -56,7 +56,7 @@ export function ShopShell({ children }: { children: ReactNode }) {
                   <WhatsAppIcon className="size-4" />
                 </a>
               </HoverTip>
-            ) : (
+            ) : settings.phone.trim() ? (
               <HoverTip label="Call the shop" side="bottom">
                 <a
                   className="inline-flex size-8 shrink-0 items-center justify-center rounded-full bg-cream text-forest"
@@ -66,7 +66,7 @@ export function ShopShell({ children }: { children: ReactNode }) {
                   <Phone className="size-4" aria-hidden="true" />
                 </a>
               </HoverTip>
-            )}
+            ) : null}
           </div>
         </div>
         <div className="mx-auto flex max-w-6xl items-center gap-2 px-4 py-3 sm:gap-3">
@@ -133,11 +133,13 @@ export function ShopShell({ children }: { children: ReactNode }) {
           <div>
             <p className="font-display text-2xl">{settings.storeName}</p>
             <p className="mt-2 text-sm text-cream/85">{settings.address}</p>
-            <p className="mt-2 text-sm">
-              <a className="underline decoration-cream/40 underline-offset-2" href={`tel:${settings.phone.replace(/\s/g, "")}`}>
-                {settings.phone}
-              </a>
-            </p>
+            {settings.phone.trim() ? (
+              <p className="mt-2 text-sm">
+                <a className="underline decoration-cream/40 underline-offset-2" href={`tel:${settings.phone.replace(/\s/g, "")}`}>
+                  {settings.phone}
+                </a>
+              </p>
+            ) : null}
             {whatsapp ? (
               <a
                 href={whatsapp}

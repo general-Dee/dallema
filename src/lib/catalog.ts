@@ -21,7 +21,7 @@ export const DEPARTMENTS: Department[] = [
     id: "furniture",
     name: "Furniture",
     slug: "furniture",
-    description: "Sofas, tables, and beds delivered across Kaduna, assembled if you want.",
+    description: "Sofas, tables, and beds delivered across Surulere and nearby Lagos, assembled if you want.",
     fulfillment: ["furniture_delivery"],
   },
   {
@@ -105,7 +105,7 @@ export const BUNDLES = [
   {
     id: "room",
     name: "Room starter",
-    blurb: "A coffee table, the Isa Kaita cookbook, and this month’s staff-pick novel.",
+    blurb: "A coffee table, the Surulere cookbook, and this month’s staff-pick novel.",
     productIds: ["coffee-table", "cookbook", "novel-lagos"],
   },
 ];

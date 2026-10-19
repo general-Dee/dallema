@@ -4,7 +4,7 @@ import { toast } from "sonner";
 import { ShopShell } from "@/components/shop-shell";
 import { Button, DeptChip, Empty, Money, StatusPill } from "@/components/ui";
 import { STATUS_LABEL } from "@/lib/catalog";
-import { formatWhen, orderWhatsAppText, whatsappHref } from "@/lib/format";
+import { formatWhen, orderWhatsAppText, shopWhatsAppHref } from "@/lib/format";
 import { fetchSharedOrder } from "@/lib/orders.functions";
 import { confirmPaystackPayment, startPaystackPayment } from "@/lib/paystack.functions";
 import { useDallema } from "@/lib/store";
@@ -122,9 +122,9 @@ function OrderPage() {
           {order.fulfillment === "pickup" ? "Paid. We’ll have it ready at the shop." : "Paid. We’re getting it to your door."}
         </p>
       )}
-      {whatsappHref(settings.phone, orderWhatsAppText(order)) ? (
+      {shopWhatsAppHref(orderWhatsAppText(order)) ? (
         <a
-          href={whatsappHref(settings.phone, orderWhatsAppText(order))}
+          href={shopWhatsAppHref(orderWhatsAppText(order))}
           target="_blank"
           rel="noopener noreferrer"
           className="mt-4 inline-flex min-h-12 items-center rounded-card bg-[#25D366] px-4 text-sm font-semibold text-[#072016]"

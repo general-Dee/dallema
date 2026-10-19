@@ -11,3 +11,4 @@ dist
 .tanstack
 .project_id
 .node_modules.lock
+!.env.example

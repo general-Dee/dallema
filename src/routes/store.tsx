@@ -12,11 +12,11 @@ function StorePage() {
     <ShopShell>
       <h1 className="font-display text-4xl text-forest-ink">{settings.storeName}</h1>
       <p className="mt-2 max-w-xl text-muted">
-        Shop from the comfort of home. Dalema packs the supermarket, the oven, and the bookstore, then brings the order to your door in Kaduna, often the same day if you send it before 4pm. The van leaves from No. 70 Isa Kaita Road, Ungwan Munchi, beside Zamani College. You can still collect at the shop if you prefer.
+        Shop from the comfort of home. Dalema packs the supermarket, the oven, and the bookstore, then brings the order to your door in Surulere and nearby Lagos areas, often the same day if you send it before 4pm. The van leaves from 14 Market Road, Surulere, Lagos. You can still collect at the shop if you prefer.
       </p>
       <dl className="mt-6 grid gap-4 sm:grid-cols-2">
         <Card title="Address" body={settings.address} />
-        <Card title="Phone" body={settings.phone} />
+        {settings.phone.trim() ? <Card title="Phone" body={settings.phone} /> : null}
         <Card title="Hours" body={settings.hours} />
         <div className="rounded-card border border-line bg-card p-4">
           <dt className="text-sm font-semibold tracking-wide uppercase">Delivery zones</dt>
@@ -26,7 +26,7 @@ function StorePage() {
                 {zone.name}: ₦{zone.fee.toLocaleString("en-NG")}, minimum shop of ₦{zone.minimum.toLocaleString("en-NG")} for groceries, bakes, and books.
               </p>
             ))}
-            <p>The near zone is the college side: Malali, Ungwan Rimi, and Ungwan Munchi, plus Kabala. The farther zone covers Barnawa, Kawo, Sabon Tasha, and Kakuri.</p>
+            <p>The near zone is Surulere: Market Road, Adeniran Ogunsanya, Bode Thomas, Lawanson, Ojuelegba, Aguda, Itire, Ijesha, and Iponri. The other zones cover Yaba and Ebute Metta, Mushin and Idi-Araba, Costain and Ijora, Apapa and Ajegunle, Ikeja and Maryland, and Lagos Island, VI, and Ikoyi.</p>
             <p>Pickup at the shop is free.</p>
             <p>Furniture delivery is ₦{settings.furnitureDeliveryFee.toLocaleString("en-NG")} unless the zone fee is higher. We charge the higher one, not both.</p>
           </dd>

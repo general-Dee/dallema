@@ -190,20 +190,20 @@ function CheckoutPage() {
           ) : null}
           {needsAddress ? (
             <>
-              <Field label="Where should we bring it?" id="address" hint="House number, street, and area in Kaduna.">
+              <Field label="Where should we bring it?" id="address" hint="House number, street, and area in Lagos.">
                 <textarea
                   id="address"
                   required
                   value={address}
                   onChange={(event) => setAddress(event.target.value)}
-                  placeholder="12 Isa Kaita Road, Ungwan Rimi"
+                  placeholder="12 Bode Thomas Street, Surulere"
                   className={`${inputClass} min-h-24 py-3`}
                 />
               </Field>
               <Field
-                label="Which part of Kaduna?"
+                label="Which part of Lagos?"
                 id="zone"
-                hint="The near zone is Malali, Ungwan Rimi, and Ungwan Munchi, by Zamani College, plus Kabala. The other zone is Barnawa, Kawo, Sabon Tasha, and Kakuri."
+                hint="The near zone is Surulere: Market Road, Adeniran Ogunsanya, Bode Thomas, Lawanson, Ojuelegba, Aguda, Itire, Ijesha, and Iponri. The other zones cover Yaba and Ebute Metta, Mushin and Idi-Araba, Costain and Ijora, Apapa and Ajegunle, Ikeja and Maryland, and Lagos Island, VI, and Ikoyi."
               >
                 <select id="zone" className={inputClass} value={zoneId} onChange={(event) => setZoneId(event.target.value)}>
                   {settings.zones.map((entry) => (

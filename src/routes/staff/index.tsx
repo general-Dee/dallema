@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { DeptChip, Money, StatusPill } from "@/components/ui";
 import { DEPARTMENTS } from "@/lib/catalog";
-import { addDays, lagosDateString, naira, sameLagosDay, whatsappHref } from "@/lib/format";
+import { addDays, lagosDateString, naira, sameLagosDay, shopWhatsAppHref } from "@/lib/format";
 import { lowStockProducts, useDallema } from "@/lib/store";
 
 export const Route = createFileRoute("/staff/")({
@@ -13,7 +13,6 @@ function Dashboard() {
   const products = useDallema((state) => state.products);
   const jobs = useDallema((state) => state.bakeryJobs);
   const deliveries = useDallema((state) => state.deliveryJobs);
-  const settings = useDallema((state) => state.settings);
   const today = lagosDateString();
   const weekStart = addDays(today, -6);
   const todays = orders.filter((order) => order.status === "completed" && sameLagosDay(order.createdAt, today));
@@ -80,9 +79,9 @@ function Dashboard() {
       </section>
       <section className="mt-8">
         <h2 className="font-display text-2xl text-forest-ink">Alerts</h2>
-        {low.length > 0 && whatsappHref(settings.phone, lowStockText(low)) ? (
+        {low.length > 0 && shopWhatsAppHref(lowStockText(low)) ? (
           <a
-            href={whatsappHref(settings.phone, lowStockText(low))}
+            href={shopWhatsAppHref(lowStockText(low))}
             target="_blank"
             rel="noopener noreferrer"
             className="mt-3 inline-flex min-h-12 items-center rounded-card bg-[#25D366] px-4 text-sm font-semibold text-[#072016]"

@@ -111,6 +111,20 @@ export function uid(prefix: string): string {
   return `${prefix}_${Math.random().toString(36).slice(2, 10)}`;
 }
 
+/** Dalema's Surulere shop number (WhatsApp and phone), confirmed by Damilare on 2026-10-19. */
+export const DEFAULT_SHOP_WHATSAPP = "+234 816 5510 842";
+
+/**
+ * The shop's WhatsApp number. VITE_SHOP_WHATSAPP (build-time env, see .env.example) overrides it;
+ * when the env var is unset the confirmed shop number above is used, so the button stays visible.
+ */
+export const SHOP_WHATSAPP: string = (import.meta.env?.VITE_SHOP_WHATSAPP ?? "").trim() || DEFAULT_SHOP_WHATSAPP;
+
+/** wa.me link to the shop's WhatsApp (wa.me/2348165510842 by default). */
+export function shopWhatsAppHref(text: string): string {
+  return whatsappHref(SHOP_WHATSAPP, text);
+}
+
 export function whatsappHref(phone: string, text: string): string {
   const digits = phone.replace(/\D/g, "");
   if (digits.length < 10) return "";

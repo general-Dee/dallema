@@ -1,4 +1,5 @@
-import { Armchair, BookOpen, Croissant, ShoppingBasket } from "lucide-react";
+import { Armchair, BookOpen, ShoppingBasket } from "lucide-react";
+import { Loaf } from "@/components/loaf-icon";
 import { cn } from "@/lib/cn";
 
 export function Logo({ className, compact = false }: { className?: string; compact?: boolean }) {
@@ -6,7 +7,7 @@ export function Logo({ className, compact = false }: { className?: string; compa
     <span className={cn("inline-flex items-center gap-2 text-forest", className)}>
       <span className="grid grid-cols-2 gap-0.5" aria-hidden="true">
         <ShoppingBasket className="size-3.5" strokeWidth={2.25} />
-        <Croissant className="size-3.5 text-bake-deep" strokeWidth={2.25} />
+        <Loaf className="size-3.5 text-bake-deep" strokeWidth={2.25} />
         <Armchair className="size-3.5 text-walnut" strokeWidth={2.25} />
         <BookOpen className="size-3.5 text-ink-fill" strokeWidth={2.25} />
       </span>

@@ -6,7 +6,7 @@ import { ProductArt, DeptIcon } from "@/components/product-art";
 import { ProductCard } from "@/components/product-card";
 import { Button } from "@/components/ui";
 import { DEPARTMENTS, tone } from "@/lib/catalog";
-import { naira, whatsappHref } from "@/lib/format";
+import { naira, shopWhatsAppHref } from "@/lib/format";
 import { useDallema } from "@/lib/store";
 
 const DEPT_LINE: Record<string, string> = {
@@ -33,7 +33,7 @@ function Home() {
     products.find((product) => product.featured) ??
     products[0];
   const picks = products.filter((product) => product.departmentId === "bookstore" && product.featured).slice(0, 4);
-  const ask = whatsappHref(settings.phone, `Hello ${settings.storeName}, I would like to shop for the week.`);
+  const ask = shopWhatsAppHref(`Hello ${settings.storeName}, I would like to shop for the week.`);
 
   return (
     <ShopShell>
@@ -45,7 +45,7 @@ function Home() {
               Shop from home. We bring it fast.
             </h1>
             <p className="mt-4 max-w-lg text-lg text-muted">
-              Groceries, fresh bread, and school books, ordered from the comfort of your house. Send it before 4pm and Kaduna delivery can be the same day.
+              Groceries, fresh bread, and school books, ordered from the comfort of your house. Send it before 4pm and delivery in Surulere and nearby areas can be the same day.
             </p>
             <div className="mt-6 flex flex-wrap gap-3">
               <a href="#departments">
@@ -90,7 +90,7 @@ function Home() {
           {[
             ["1", "Choose", "From the sofa. Groceries, bread, a chair, the school list. One basket."],
             ["2", "Pay online", "Card, transfer, or USSD on Paystack. No cash at the door."],
-            ["3", "We bring it", "Fast, to your address in Kaduna. Same day if you order before 4pm."],
+            ["3", "We bring it", "Fast, to your address in Surulere or nearby Lagos. Same day if you order before 4pm."],
           ].map(([step, title, body]) => (
             <div key={step} className="rounded-2xl border border-line bg-card px-4 py-4 shadow-card">
               <p className="font-display text-3xl text-forest-ink">{step}</p>
@@ -193,7 +193,7 @@ function Home() {
         <p className="text-xs font-semibold tracking-[0.16em] text-cream/70 uppercase">Delivered to your door</p>
         <h2 className="mt-2 max-w-xl font-display text-3xl">You shop where you are. We ride the rest.</h2>
         <p className="mt-3 max-w-xl text-cream/85">
-          Dalema packs the supermarket, the oven, and the bookstore, then brings them across Kaduna. {settings.hours}. Furniture still needs its own van, from two days out.
+          Dalema packs the supermarket, the oven, and the bookstore, then brings them across Surulere and nearby Lagos. {settings.hours}. Furniture still needs its own van, from two days out.
         </p>
         <div className="mt-6 flex flex-wrap gap-3">
           <a href="#departments">
