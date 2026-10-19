@@ -4,6 +4,7 @@ import { ShopShell } from "@/components/shop-shell";
 import { ProductCard } from "@/components/product-card";
 import { Button, Field, Money, StatusPill } from "@/components/ui";
 import { inputClass } from "@/components/ui";
+import { ZoneOptions } from "@/components/zone-options";
 import { formatWhen } from "@/lib/format";
 import { useDallema, wishlistIds } from "@/lib/store";
 import { useState } from "react";
@@ -114,18 +115,14 @@ function AccountPage() {
           <h2 className="font-display text-3xl text-forest-ink">Saved address</h2>
           <div className="mt-3 grid gap-3 sm:grid-cols-2">
             <Field label="Street" id="line">
-              <input id="line" className={inputClass} placeholder="12 Bode Thomas Street" value={line} onChange={(event) => setLine(event.target.value)} />
+              <input id="line" className={inputClass} placeholder="12 Isa Kaita Road or 8 Gana Street" value={line} onChange={(event) => setLine(event.target.value)} />
             </Field>
             <Field label="Area" id="area">
-              <input id="area" className={inputClass} placeholder="Surulere" value={area} onChange={(event) => setArea(event.target.value)} />
+              <input id="area" className={inputClass} placeholder="Ungwan Rimi, Kaduna or Maitama, Abuja" value={area} onChange={(event) => setArea(event.target.value)} />
             </Field>
             <Field label="Zone" id="zone">
               <select id="zone" className={inputClass} value={zoneId} onChange={(event) => setZoneId(event.target.value)}>
-                {settings.zones.map((zone) => (
-                  <option key={zone.id} value={zone.id}>
-                    {zone.name}
-                  </option>
-                ))}
+                <ZoneOptions settings={settings} label={(zone) => zone.name} />
               </select>
             </Field>
           </div>

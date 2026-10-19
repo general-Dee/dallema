@@ -111,7 +111,7 @@ export function uid(prefix: string): string {
   return `${prefix}_${Math.random().toString(36).slice(2, 10)}`;
 }
 
-/** Dalema's Surulere shop number (WhatsApp and phone), confirmed by Damilare on 2026-10-19. */
+/** Dalema's shop number (WhatsApp and phone) for both branches, Kaduna and Abuja; confirmed by Damilare on 2026-10-19. */
 export const DEFAULT_SHOP_WHATSAPP = "+234 816 5510 842";
 
 /**

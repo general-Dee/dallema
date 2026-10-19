@@ -7,6 +7,7 @@ import { DeptIcon } from "@/components/product-art";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { inputClass } from "@/components/ui";
 import { DEPARTMENTS, tone } from "@/lib/catalog";
+import { branchLines, zonesByBranch } from "@/lib/branches";
 import { shopWhatsAppHref } from "@/lib/format";
 import { useDallema } from "@/lib/store";
 
@@ -43,7 +44,7 @@ export function ShopShell({ children }: { children: ReactNode }) {
       <header className="sticky top-0 z-40 border-b border-line bg-page/95 backdrop-blur">
         <div className="bg-forest text-cream">
           <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 py-2 text-xs">
-            <p className="truncate">{settings.address}</p>
+            <p className="truncate">{branchLines(settings).join(" · ") || settings.address}</p>
             {whatsapp ? (
               <HoverTip label="WhatsApp" side="bottom">
                 <a
@@ -132,7 +133,11 @@ export function ShopShell({ children }: { children: ReactNode }) {
         <div className="mx-auto grid max-w-6xl gap-6 px-4 py-8 sm:grid-cols-2 lg:grid-cols-4">
           <div>
             <p className="font-display text-2xl">{settings.storeName}</p>
-            <p className="mt-2 text-sm text-cream/85">{settings.address}</p>
+            {branchLines(settings).map((line) => (
+              <p key={line} className="mt-2 text-sm text-cream/85">
+                {line}
+              </p>
+            ))}
             {settings.phone.trim() ? (
               <p className="mt-2 text-sm">
                 <a className="underline decoration-cream/40 underline-offset-2" href={`tel:${settings.phone.replace(/\s/g, "")}`}>
@@ -159,13 +164,20 @@ export function ShopShell({ children }: { children: ReactNode }) {
           <div>
             <p className="text-sm font-semibold tracking-wide uppercase">Delivery</p>
             <ul className="mt-2 space-y-1 text-sm text-cream/85">
-              {settings.zones.map((zone) => (
-                <li key={zone.id}>
-                  {zone.name}: ₦{zone.fee.toLocaleString("en-NG")} · from ₦{zone.minimum.toLocaleString("en-NG")}
+              {zonesByBranch(settings).map((group) => (
+                <li key={group.branch?.id ?? "other"}>
+                  {group.branch ? <p className="font-semibold text-cream">{group.branch.city}</p> : null}
+                  <ul className="space-y-1">
+                    {group.zones.map((zone) => (
+                      <li key={zone.id}>
+                        {zone.name}: ₦{zone.fee.toLocaleString("en-NG")} · from ₦{zone.minimum.toLocaleString("en-NG")}
+                      </li>
+                    ))}
+                  </ul>
                 </li>
               ))}
               <li>To your door, often the same day if you order before 4pm.</li>
-              <li>Pickup at the shop is free, if you would rather come in.</li>
+              <li>Pickup at either branch is free, if you would rather come in.</li>
               <li>Furniture delivery from ₦{settings.furnitureDeliveryFee.toLocaleString("en-NG")}.</li>
             </ul>
           </div>

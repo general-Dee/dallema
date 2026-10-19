@@ -96,13 +96,13 @@ function draw(id: string, departmentId: DeptId): ReactNode {
     case "waec":
       return <BookStack />;
     case "novel-lagos":
-      return <StandingBook cover="#243044" title="Light" />;
+      return <StandingBook cover="#243044" title="Kaita" />;
     case "cookbook":
       return <StandingBook cover="#8c3a2f" title="Pots" />;
     case "notebook-set":
       return <Notebooks />;
     case "coloring-book":
-      return <StandingBook cover="#c9862a" title="Lagos" pencil />;
+      return <StandingBook cover="#c9862a" title="Kaduna" pencil />;
     case "business-pb":
       return <StandingBook cover="#1f4d3a" title="Shop" />;
     case "exercise-books":

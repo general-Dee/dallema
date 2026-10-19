@@ -152,7 +152,7 @@ function CartPage() {
               <div>
                 <dt className="text-muted">Delivery</dt>
                 <dd className="mt-1 text-muted">
-                  To your door across Surulere and nearby Lagos, often the same day if you order before 4pm, from ₦800. Collecting at the shop is free. Furniture from ₦
+                  To your door across Kaduna and Abuja, often the same day if you order before 4pm, from ₦800. Collecting at the shop is free. Furniture from ₦
                   {settings.furnitureDeliveryFee.toLocaleString("en-NG")}.
                 </dd>
               </div>

@@ -4,6 +4,8 @@ import { toast } from "sonner";
 import { ShopShell } from "@/components/shop-shell";
 import { Button, Empty, Field, Money } from "@/components/ui";
 import { inputClass } from "@/components/ui";
+import { ZoneOptions } from "@/components/zone-options";
+import { pickupPlaces } from "@/lib/branches";
 import { furnitureSlots, grocerySlots } from "@/lib/format";
 import { startPaystackPayment } from "@/lib/paystack.functions";
 import { buildQuote } from "@/lib/pricing";
@@ -185,33 +187,34 @@ function CheckoutPage() {
           ) : null}
           {method === "pickup" && preview.hasCounter && !preview.hasFurniture ? (
             <p className="rounded-card bg-forest-soft px-4 py-3 text-sm text-forest-ink">
-              Collect at {settings.address}. Bring the order number. Pickup is free.
+              Collect at {pickupPlaces(settings)}. Say which branch in the note for the shop, and bring the order number. Pickup is free.
             </p>
           ) : null}
           {needsAddress ? (
             <>
-              <Field label="Where should we bring it?" id="address" hint="House number, street, and area in Lagos.">
+              <Field label="Where should we bring it?" id="address" hint="House number, street, and area in Kaduna or Abuja.">
                 <textarea
                   id="address"
                   required
                   value={address}
                   onChange={(event) => setAddress(event.target.value)}
-                  placeholder="12 Bode Thomas Street, Surulere"
+                  placeholder="12 Isa Kaita Road, Ungwan Rimi, or 8 Gana Street, Maitama"
                   className={`${inputClass} min-h-24 py-3`}
                 />
               </Field>
               <Field
-                label="Which part of Lagos?"
+                label="Which part of Kaduna or Abuja?"
                 id="zone"
-                hint="The near zone is Surulere: Market Road, Adeniran Ogunsanya, Bode Thomas, Lawanson, Ojuelegba, Aguda, Itire, Ijesha, and Iponri. The other zones cover Yaba and Ebute Metta, Mushin and Idi-Araba, Costain and Ijora, Apapa and Ajegunle, Ikeja and Maryland, and Lagos Island, VI, and Ikoyi."
+                hint="Zones are grouped by city. Kaduna: the near zone is Malali, Ungwan Rimi, and Ungwan Munchi, plus Kabala. The farther zone covers Barnawa, Kawo, Sabon Tasha, and Kakuri. Abuja: Maitama and Asokoro are nearest the Gana Street branch."
               >
                 <select id="zone" className={inputClass} value={zoneId} onChange={(event) => setZoneId(event.target.value)}>
-                  {settings.zones.map((entry) => (
-                    <option key={entry.id} value={entry.id}>
-                      {entry.name} · ₦{entry.fee.toLocaleString("en-NG")}
-                      {method === "delivery" && preview.hasCounter ? ` · shop from ₦${entry.minimum.toLocaleString("en-NG")}` : ""}
-                    </option>
-                  ))}
+                  <ZoneOptions
+                    settings={settings}
+                    label={(entry) =>
+                      `${entry.name} · ₦${entry.fee.toLocaleString("en-NG")}` +
+                      (method === "delivery" && preview.hasCounter ? ` · shop from ₦${entry.minimum.toLocaleString("en-NG")}` : "")
+                    }
+                  />
                 </select>
               </Field>
             </>

@@ -238,9 +238,19 @@ export interface SchoolList {
   items: SchoolListItem[];
 }
 
+export interface Branch {
+  id: string;
+  name: string;
+  city: string;
+  /** Empty until the address is confirmed; the UI hides an empty address. */
+  address: string;
+}
+
 export interface DeliveryZone {
   id: string;
   name: string;
+  /** Branch that serves this zone. Older saved zones have none. */
+  branchId?: string;
   minKm: number;
   maxKm: number;
   fee: number;
@@ -252,6 +262,8 @@ export interface Settings {
   address: string;
   phone: string;
   hours: string;
+  /** Kaduna and Abuja. Optional so settings saved before branches existed still load. */
+  branches?: Branch[];
   zones: DeliveryZone[];
   earnNairaPerPoint: number;
   nairaPer100Points: number;

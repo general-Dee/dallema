@@ -1,6 +1,6 @@
 # Dalema
 
-Neighbourhood shop at 14 Market Road, Surulere, Lagos. It delivers across Surulere and nearby Lagos areas. One brand, four counters: supermarket, bakery, furniture, and bookstore. The same app is the customer shop and the staff desk.
+Neighbourhood shop with two branches: Kaduna, at No. 70 Isa Kaita Road, Ungwan Munchi, Kaduna North, beside Zamani College, and Abuja, at 45 Gana Street, Maitama. One brand, four counters: supermarket, bakery, furniture, and bookstore. The same app is the customer shop and the staff desk.
 
 ## Run it
 
@@ -9,7 +9,7 @@ npm install
 npm run dev
 ```
 
-Shop WhatsApp and phone: +234 816 5510 842 (wa.me/2348165510842). Override with `VITE_SHOP_WHATSAPP` (see `.env.example`).
+Shop WhatsApp and phone: +234 816 5510 842 (wa.me/2348165510842), one number for both branches. Override with `VITE_SHOP_WHATSAPP` (see `.env.example`).
 
 Demo staff entrance: `owner@dalema.store` / `dalema`. Orders, stock, and settings stay in the browser.
 

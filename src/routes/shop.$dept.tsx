@@ -62,7 +62,7 @@ function DepartmentPage() {
       ) : null}
       {dept.id === "furniture" ? (
         <p className="mt-4 rounded-card bg-walnut-soft px-4 py-3 text-sm text-walnut-deep">
-          Furniture leaves on its own van, from two days out, inside our Lagos zones. Assembly can be ticked on the product. It does not ride with the grocery order.
+          Furniture leaves on its own van, from two days out, inside our Kaduna and Abuja zones. Assembly can be ticked on the product. It does not ride with the grocery order.
         </p>
       ) : null}
       {dept.id === "bookstore" ? (

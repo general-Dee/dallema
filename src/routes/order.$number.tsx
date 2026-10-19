@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { ShopShell } from "@/components/shop-shell";
 import { Button, DeptChip, Empty, Money, StatusPill } from "@/components/ui";
+import { pickupPlaces } from "@/lib/branches";
 import { STATUS_LABEL } from "@/lib/catalog";
 import { formatWhen, orderWhatsAppText, shopWhatsAppHref } from "@/lib/format";
 import { fetchSharedOrder } from "@/lib/orders.functions";
@@ -72,7 +73,7 @@ function OrderPage() {
           ? "We’re putting it together now."
           : order.status === "ready"
             ? order.fulfillment === "pickup"
-              ? `It’s ready for pickup at ${settings.address}.`
+              ? `It’s ready for pickup at ${pickupPlaces(settings)}.`
               : "It’s packed and waiting for the rider or van."
             : order.status === "out_for_delivery"
               ? "It’s on the way. Keep your phone near."
@@ -169,7 +170,7 @@ function OrderPage() {
             {order.slot ? ` · ${order.slot}` : ""}
           </p>
           {order.furnitureSlot ? <p className="mt-1 text-sm">Furniture · {order.furnitureSlot}</p> : null}
-          {order.address ? <p className="mt-2 text-sm text-muted">{order.address}</p> : <p className="mt-2 text-sm text-muted">Collect at {settings.address}</p>}
+          {order.address ? <p className="mt-2 text-sm text-muted">{order.address}</p> : <p className="mt-2 text-sm text-muted">Collect at {pickupPlaces(settings)}</p>}
           {order.notes ? <p className="mt-2 text-sm">Note: {order.notes}</p> : null}
           {customer ? (
             <div className="mt-4 rounded-card bg-forest-soft p-3 text-sm text-forest-ink">
