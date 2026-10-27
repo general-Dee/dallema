@@ -3,13 +3,20 @@ import { useEffect, useState } from "react";
 import { HoverTip } from "@/components/hover-tip";
 import { cn } from "@/lib/cn";
 
-export const THEME_STORAGE_KEY = "dallema-theme";
+export const THEME_STORAGE_KEY = "dalema-theme";
+const LEGACY_THEME_KEY = "dallema-theme";
 
-export const themeBootScript = `(function(){try{var t=localStorage.getItem("${THEME_STORAGE_KEY}");var dark=t==="dark"||(t!=="light"&&window.matchMedia("(prefers-color-scheme: dark)").matches);document.documentElement.classList.toggle("dark",dark);}catch(e){}})();`;
+// Runs in <head> before first paint. Reads the new key; if it is empty, takes a
+// saved choice from the old misspelled key ("dark" or "light" only) and copies it over.
+export const themeBootScript = `(function(){try{var t=localStorage.getItem("${THEME_STORAGE_KEY}");if(t===null||t===""){var o=localStorage.getItem("${LEGACY_THEME_KEY}");if(o==="dark"||o==="light"){t=o;try{localStorage.setItem("${THEME_STORAGE_KEY}",o);}catch(e){}}}var dark=t==="dark"||(t!=="light"&&window.matchMedia("(prefers-color-scheme: dark)").matches);document.documentElement.classList.toggle("dark",dark);}catch(e){}})();`;
 
 export function applyTheme(dark: boolean) {
   document.documentElement.classList.toggle("dark", dark);
-  localStorage.setItem(THEME_STORAGE_KEY, dark ? "dark" : "light");
+  try {
+    localStorage.setItem(THEME_STORAGE_KEY, dark ? "dark" : "light");
+  } catch {
+    // Blocked or full storage: the theme still changes for this visit.
+  }
   window.dispatchEvent(new Event("dallema-theme"));
 }
 

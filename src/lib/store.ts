@@ -14,6 +14,7 @@ import {
 import { saveDeskOrder, saveSharedOrder, updateSharedOrder } from "./orders.functions";
 import type { ShopCatalog, ShopDesk } from "./shop.functions";
 import { breakdownOf, buildQuote, resolveLines, stockError } from "./pricing";
+import { migrateLegacyKey } from "./legacy-storage";
 import { createSeed, type SeedData } from "./seed";
 import type {
   BakeryJob,
@@ -38,17 +39,58 @@ import type {
   Unit,
 } from "./types";
 
+const STORE_KEY = "dalema-store-v1";
+const LEGACY_STORE_KEY = "dallema-store-v1";
+
+// A saved store is JSON shaped like { state: {...}, version: n }.
+function isPersistedStore(raw: string) {
+  try {
+    const parsed: unknown = JSON.parse(raw);
+    return (
+      typeof parsed === "object" &&
+      parsed !== null &&
+      typeof (parsed as { state?: unknown }).state === "object" &&
+      (parsed as { state?: unknown }).state !== null
+    );
+  } catch {
+    return false;
+  }
+}
+
 const memory = new Map<string, string>();
 const safeStorage = {
-  getItem: (key: string) =>
-    typeof window === "undefined" ? (memory.get(key) ?? null) : localStorage.getItem(key),
+  getItem: (key: string) => {
+    if (typeof window === "undefined") return memory.get(key) ?? null;
+    try {
+      if (key === STORE_KEY) {
+        // Copies a pre-rename save over once; never overwrites a new-key save.
+        migrateLegacyKey(localStorage, LEGACY_STORE_KEY, STORE_KEY, isPersistedStore);
+      }
+      return localStorage.getItem(key);
+    } catch {
+      return null; // blocked storage: start from defaults
+    }
+  },
   setItem: (key: string, value: string) => {
-    if (typeof window === "undefined") memory.set(key, value);
-    else localStorage.setItem(key, value);
+    if (typeof window === "undefined") {
+      memory.set(key, value);
+      return;
+    }
+    try {
+      localStorage.setItem(key, value);
+    } catch {
+      // Blocked or full storage: keep working in memory for this visit.
+    }
   },
   removeItem: (key: string) => {
     if (typeof window === "undefined") memory.delete(key);
-    else localStorage.removeItem(key);
+    else {
+      try {
+        localStorage.removeItem(key);
+      } catch {
+        // Blocked storage: nothing to remove.
+      }
+    }
   },
 };
 
@@ -1116,7 +1158,7 @@ export const useDallema = create<ShopState>()(
       },
     }),
     {
-      name: "dallema-store-v1",
+      name: STORE_KEY,
       version: 4,
       migrate: (persisted, version) => {
         if (version >= 4 || !persisted || typeof persisted !== "object") return persisted;
