@@ -1,16 +1,16 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { toast } from "sonner";
 import { Button } from "@/components/ui";
-import { useDallema } from "@/lib/store";
+import { useDalema } from "@/lib/store";
 
 export const Route = createFileRoute("/staff/deliveries")({
   component: DeliveriesPage,
 });
 
 function DeliveriesPage() {
-  const jobs = useDallema((state) => state.deliveryJobs).filter((job) => job.type === "furniture");
-  const orders = useDallema((state) => state.orders);
-  const mark = useDallema((state) => state.markDelivery);
+  const jobs = useDalema((state) => state.deliveryJobs).filter((job) => job.type === "furniture");
+  const orders = useDalema((state) => state.orders);
+  const mark = useDalema((state) => state.markDelivery);
   return (
     <div>
       <h1 className="font-display text-4xl text-forest-ink">Furniture deliveries</h1>

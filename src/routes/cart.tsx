@@ -8,7 +8,7 @@ import { Button, DeptChip, Empty, Field, Money } from "@/components/ui";
 import { inputClass } from "@/components/ui";
 import { DEPARTMENTS } from "@/lib/catalog";
 import { buildQuote } from "@/lib/pricing";
-import { deptSort, useDallema } from "@/lib/store";
+import { deptSort, useDalema } from "@/lib/store";
 import type { DeptId } from "@/lib/types";
 
 export const Route = createFileRoute("/cart")({
@@ -16,14 +16,14 @@ export const Route = createFileRoute("/cart")({
 });
 
 function CartPage() {
-  const cart = useDallema((state) => state.cart);
-  const products = useDallema((state) => state.products);
-  const promotions = useDallema((state) => state.promotions);
-  const settings = useDallema((state) => state.settings);
-  const promoCode = useDallema((state) => state.promoCode);
-  const setPromo = useDallema((state) => state.setPromoCode);
-  const setQty = useDallema((state) => state.setQty);
-  const remove = useDallema((state) => state.removeLine);
+  const cart = useDalema((state) => state.cart);
+  const products = useDalema((state) => state.products);
+  const promotions = useDalema((state) => state.promotions);
+  const settings = useDalema((state) => state.settings);
+  const promoCode = useDalema((state) => state.promoCode);
+  const setPromo = useDalema((state) => state.setPromoCode);
+  const setQty = useDalema((state) => state.setQty);
+  const remove = useDalema((state) => state.removeLine);
   const [draft, setDraft] = useState(promoCode ?? "");
   const quote = buildQuote({
     cart,

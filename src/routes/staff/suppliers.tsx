@@ -1,17 +1,17 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { toast } from "sonner";
 import { Button, Money } from "@/components/ui";
-import { useDallema } from "@/lib/store";
+import { useDalema } from "@/lib/store";
 
 export const Route = createFileRoute("/staff/suppliers")({
   component: SuppliersPage,
 });
 
 function SuppliersPage() {
-  const suppliers = useDallema((state) => state.suppliers);
-  const orders = useDallema((state) => state.purchaseOrders);
-  const draft = useDallema((state) => state.draftLowStockPos);
-  const setStatus = useDallema((state) => state.setPoStatus);
+  const suppliers = useDalema((state) => state.suppliers);
+  const orders = useDalema((state) => state.purchaseOrders);
+  const draft = useDalema((state) => state.draftLowStockPos);
+  const setStatus = useDalema((state) => state.setPoStatus);
   return (
     <div>
       <div className="flex flex-wrap items-center justify-between gap-3">

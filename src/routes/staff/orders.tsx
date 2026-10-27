@@ -4,7 +4,7 @@ import { DeptChip, Money, StatusPill } from "@/components/ui";
 import { inputClass } from "@/components/ui";
 import { DEPARTMENTS, STATUS_LABEL } from "@/lib/catalog";
 import { formatWhen } from "@/lib/format";
-import { useDallema } from "@/lib/store";
+import { useDalema } from "@/lib/store";
 import type { DeptId, OrderStatus } from "@/lib/types";
 
 export const Route = createFileRoute("/staff/orders")({
@@ -13,7 +13,7 @@ export const Route = createFileRoute("/staff/orders")({
 
 function OrdersPage() {
   const pathname = useRouterState({ select: (state) => state.location.pathname });
-  const orders = useDallema((state) => state.orders);
+  const orders = useDalema((state) => state.orders);
   const [status, setStatus] = useState<OrderStatus | "all">("all");
   const [dept, setDept] = useState<DeptId | "all">("all");
   if (pathname !== "/staff/orders") return <Outlet />;

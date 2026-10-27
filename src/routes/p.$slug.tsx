@@ -8,7 +8,7 @@ import { Button, DeptChip, Empty, Field, Money } from "@/components/ui";
 import { inputClass } from "@/components/ui";
 import { BOUGHT_TOGETHER, DEPARTMENTS, categoryName } from "@/lib/catalog";
 import { earliestMadeDate, formatDay, furnitureSlots, naira } from "@/lib/format";
-import { useDallema } from "@/lib/store";
+import { useDalema } from "@/lib/store";
 
 export const Route = createFileRoute("/p/$slug")({
   component: ProductPage,
@@ -16,9 +16,9 @@ export const Route = createFileRoute("/p/$slug")({
 
 function ProductPage() {
   const { slug } = Route.useParams();
-  const products = useDallema((state) => state.products);
-  const settings = useDallema((state) => state.settings);
-  const add = useDallema((state) => state.addToCart);
+  const products = useDalema((state) => state.products);
+  const settings = useDalema((state) => state.settings);
+  const add = useDalema((state) => state.addToCart);
   const product = products.find((entry) => entry.slug === slug && entry.active);
   const [qty, setQty] = useState(1);
   const [message, setMessage] = useState("");

@@ -247,7 +247,7 @@ function jobsForOrder(order: Order): DeliveryJob[] {
 
 export let applyingRemoteShop = false;
 
-export const useDallema = create<ShopState>()(
+export const useDalema = create<ShopState>()(
   persist(
     (set, get) => ({
       ...createSeed(),
@@ -1170,7 +1170,7 @@ export const useDallema = create<ShopState>()(
 );
 
 export function useCustomer() {
-  return useDallema((state) =>
+  return useDalema((state) =>
     state.customers.find((customer) => customer.id === state.activeCustomerId) ?? null,
   );
 }

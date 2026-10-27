@@ -8,12 +8,12 @@ import { ThemeToggle } from "@/components/theme-toggle";
 import { inputClass } from "@/components/ui";
 import { DEPARTMENTS, tone } from "@/lib/catalog";
 import { whatsappHref } from "@/lib/format";
-import { useDallema } from "@/lib/store";
+import { useDalema } from "@/lib/store";
 
 export function ShopShell({ children }: { children: ReactNode }) {
-  const settings = useDallema((state) => state.settings);
-  const count = useDallema((state) => state.cart.reduce((sum, line) => sum + line.qty, 0));
-  const customer = useDallema((state) =>
+  const settings = useDalema((state) => state.settings);
+  const count = useDalema((state) => state.cart.reduce((sum, line) => sum + line.qty, 0));
+  const customer = useDalema((state) =>
     state.customers.find((entry) => entry.id === state.activeCustomerId),
   );
   const navigate = useNavigate();

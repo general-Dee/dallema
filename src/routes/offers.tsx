@@ -4,17 +4,17 @@ import { ShopShell } from "@/components/shop-shell";
 import { Button } from "@/components/ui";
 import { BUNDLES, DEPARTMENTS } from "@/lib/catalog";
 import { formatDay, naira } from "@/lib/format";
-import { useDallema } from "@/lib/store";
+import { useDalema } from "@/lib/store";
 
 export const Route = createFileRoute("/offers")({
   component: OffersPage,
 });
 
 function OffersPage() {
-  const promos = useDallema((state) => state.promotions).filter((promo) => promo.active);
-  const products = useDallema((state) => state.products);
-  const settings = useDallema((state) => state.settings);
-  const add = useDallema((state) => state.addToCart);
+  const promos = useDalema((state) => state.promotions).filter((promo) => promo.active);
+  const products = useDalema((state) => state.products);
+  const settings = useDalema((state) => state.settings);
+  const add = useDalema((state) => state.addToCart);
 
   return (
     <ShopShell>

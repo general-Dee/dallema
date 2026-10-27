@@ -4,7 +4,7 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui";
 import { inputClass } from "@/components/ui";
 import { addDays, formatDay, lagosDateString } from "@/lib/format";
-import { useDallema } from "@/lib/store";
+import { useDalema } from "@/lib/store";
 
 export const Route = createFileRoute("/staff/bakery")({
   component: BakeryPage,
@@ -12,10 +12,10 @@ export const Route = createFileRoute("/staff/bakery")({
 
 function BakeryPage() {
   const [date, setDate] = useState(lagosDateString());
-  const jobs = useDallema((state) => state.bakeryJobs).filter((job) => job.date === date);
-  const products = useDallema((state) => state.products);
-  const save = useDallema((state) => state.saveBakery);
-  const create = useDallema((state) => state.createBakeryJobs);
+  const jobs = useDalema((state) => state.bakeryJobs).filter((job) => job.date === date);
+  const products = useDalema((state) => state.products);
+  const save = useDalema((state) => state.saveBakery);
+  const create = useDalema((state) => state.createBakeryJobs);
   return (
     <div>
       <h1 className="font-display text-4xl text-forest-ink">Bakery production</h1>

@@ -3,7 +3,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { Button, Field } from "@/components/ui";
 import { inputClass } from "@/components/ui";
-import { useDallema } from "@/lib/store";
+import { useDalema } from "@/lib/store";
 import type { Settings } from "@/lib/types";
 
 export const Route = createFileRoute("/staff/settings")({
@@ -11,9 +11,9 @@ export const Route = createFileRoute("/staff/settings")({
 });
 
 function SettingsPage() {
-  const current = useDallema((state) => state.settings);
-  const save = useDallema((state) => state.updateSettings);
-  const reset = useDallema((state) => state.resetDemo);
+  const current = useDalema((state) => state.settings);
+  const save = useDalema((state) => state.updateSettings);
+  const reset = useDalema((state) => state.resetDemo);
   const [form, setForm] = useState<Settings>(current);
   return (
     <div>

@@ -6,14 +6,14 @@ import { ThemeToggle } from "@/components/theme-toggle";
 import { Button, Field } from "@/components/ui";
 import { inputClass } from "@/components/ui";
 import { DEMO_STAFF, ROLE_LABEL } from "@/lib/catalog";
-import { useDallema } from "@/lib/store";
+import { useDalema } from "@/lib/store";
 
 export const Route = createFileRoute("/staff/login")({
   component: LoginPage,
 });
 
 function LoginPage() {
-  const login = useDallema((state) => state.login);
+  const login = useDalema((state) => state.login);
   const navigate = useNavigate();
   const [email, setEmail] = useState(DEMO_STAFF.email);
   const [password, setPassword] = useState("");

@@ -7,7 +7,7 @@ import { ProductCard } from "@/components/product-card";
 import { Button } from "@/components/ui";
 import { DEPARTMENTS, tone } from "@/lib/catalog";
 import { naira, whatsappHref } from "@/lib/format";
-import { useDallema } from "@/lib/store";
+import { useDalema } from "@/lib/store";
 
 const DEPT_LINE: Record<string, string> = {
   supermarket: "Rice, oil, the week",
@@ -21,9 +21,9 @@ export const Route = createFileRoute("/")({
 });
 
 function Home() {
-  const products = useDallema((state) => state.products).filter((product) => product.active);
-  const settings = useDallema((state) => state.settings);
-  const customer = useDallema((state) =>
+  const products = useDalema((state) => state.products).filter((product) => product.active);
+  const settings = useDalema((state) => state.settings);
+  const customer = useDalema((state) =>
     state.customers.find((entry) => entry.id === state.activeCustomerId),
   );
   const bakery = products.filter((product) => product.departmentId === "bakery" && !product.isMadeToOrder).slice(0, 4);

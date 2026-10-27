@@ -4,7 +4,7 @@ import { StaffShell } from "@/components/staff-shell";
 import { DEMO_STAFF } from "@/lib/catalog";
 import { listSharedOrders } from "@/lib/orders.functions";
 import { loadShopDesk, saveShopDocs } from "@/lib/shop.functions";
-import { applyingRemoteShop, useDallema } from "@/lib/store";
+import { applyingRemoteShop, useDalema } from "@/lib/store";
 
 export const Route = createFileRoute("/staff")({
   component: StaffLayout,
@@ -12,8 +12,8 @@ export const Route = createFileRoute("/staff")({
 
 function StaffLayout() {
   const pathname = useRouterState({ select: (state) => state.location.pathname });
-  const staff = useDallema((state) => state.staff);
-  const hydrated = useDallema((state) => state.hydrated);
+  const staff = useDalema((state) => state.staff);
+  const hydrated = useDalema((state) => state.hydrated);
   if (!hydrated) {
     return (
       <main className="flex min-h-dvh items-center justify-center bg-page px-6 text-forest-ink">
@@ -32,8 +32,8 @@ function StaffLayout() {
 }
 
 function DeskSync() {
-  const merge = useDallema((state) => state.mergeSharedOrders);
-  const apply = useDallema((state) => state.applyRemoteShop);
+  const merge = useDalema((state) => state.mergeSharedOrders);
+  const apply = useDalema((state) => state.applyRemoteShop);
   useEffect(() => {
     let stop = false;
     let timer = 0;
@@ -41,7 +41,7 @@ function DeskSync() {
     const deskKey = DEMO_STAFF.password;
 
     function snapshot() {
-      const state = useDallema.getState();
+      const state = useDalema.getState();
       return {
         deskKey,
         catalog: {
@@ -68,7 +68,7 @@ function DeskSync() {
       if (stop) return;
       if (shop.ok && shop.catalog) apply({ catalog: shop.catalog, desk: shop.desk });
       else if (shop.ok) await saveShopDocs({ data: snapshot() });
-      unsub = useDallema.subscribe((state, prev) => {
+      unsub = useDalema.subscribe((state, prev) => {
         if (applyingRemoteShop || !state.staff) return;
         const changed =
           state.products !== prev.products ||

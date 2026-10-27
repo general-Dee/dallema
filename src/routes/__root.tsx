@@ -5,7 +5,7 @@ import { PreviewHostBridge } from "@/components/preview-host-bridge";
 import { themeBootScript } from "@/components/theme-toggle";
 import { AuthProvider } from "@/lib/auth/provider";
 import { loadShopCatalog } from "@/lib/shop.functions";
-import { useDallema } from "@/lib/store";
+import { useDalema } from "@/lib/store";
 import appCss from "../styles.css?url";
 
 export const Route = createRootRoute({
@@ -38,8 +38,8 @@ function ThemeToaster() {
   useEffect(() => {
     const sync = () => setTheme(document.documentElement.classList.contains("dark") ? "dark" : "light");
     sync();
-    window.addEventListener("dallema-theme", sync);
-    return () => window.removeEventListener("dallema-theme", sync);
+    window.addEventListener("dalema-theme", sync);
+    return () => window.removeEventListener("dalema-theme", sync);
   }, []);
   return <Toaster position="top-center" richColors theme={theme} />;
 }
@@ -49,16 +49,16 @@ function Root() {
     let stop = false;
     async function pullCatalog() {
       const result = await loadShopCatalog({ data: {} });
-      if (!stop && result.ok && result.catalog) useDallema.getState().applyRemoteShop({ catalog: result.catalog });
+      if (!stop && result.ok && result.catalog) useDalema.getState().applyRemoteShop({ catalog: result.catalog });
     }
     void (async () => {
-      await Promise.resolve(useDallema.persist.rehydrate());
+      await Promise.resolve(useDalema.persist.rehydrate());
       try {
         await pullCatalog();
       } catch {
         // The shop still opens from this browser if the database is briefly unreachable.
       }
-      if (!stop) useDallema.setState({ hydrated: true });
+      if (!stop) useDalema.setState({ hydrated: true });
     })();
     const timer = window.setInterval(() => {
       void pullCatalog().catch(() => undefined);

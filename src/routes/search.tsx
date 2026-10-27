@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { ShopShell } from "@/components/shop-shell";
 import { ProductCard } from "@/components/product-card";
 import { DeptLinks, Empty } from "@/components/ui";
-import { useDallema } from "@/lib/store";
+import { useDalema } from "@/lib/store";
 
 export const Route = createFileRoute("/search")({
   validateSearch: (search: Record<string, unknown>) => ({
@@ -14,7 +14,7 @@ export const Route = createFileRoute("/search")({
 function SearchPage() {
   const { q } = Route.useSearch();
   const query = q ?? "";
-  const products = useDallema((state) => state.products);
+  const products = useDalema((state) => state.products);
   const needle = query.trim().toLowerCase();
   const results = needle
     ? products.filter((product) => {

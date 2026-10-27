@@ -5,7 +5,7 @@ import { ProductCard } from "@/components/product-card";
 import { Button, Field, Money, StatusPill } from "@/components/ui";
 import { inputClass } from "@/components/ui";
 import { formatWhen } from "@/lib/format";
-import { useDallema, wishlistIds } from "@/lib/store";
+import { useDalema, wishlistIds } from "@/lib/store";
 import { useState } from "react";
 
 export const Route = createFileRoute("/account")({
@@ -13,15 +13,15 @@ export const Route = createFileRoute("/account")({
 });
 
 function AccountPage() {
-  const customers = useDallema((state) => state.customers);
-  const activeId = useDallema((state) => state.activeCustomerId);
-  const setActive = useDallema((state) => state.setActiveCustomer);
-  const orders = useDallema((state) => state.orders);
-  const products = useDallema((state) => state.products);
-  const settings = useDallema((state) => state.settings);
-  const reorder = useDallema((state) => state.reorder);
-  const saveAddress = useDallema((state) => state.saveAddress);
-  const wished = useDallema((state) => wishlistIds(state));
+  const customers = useDalema((state) => state.customers);
+  const activeId = useDalema((state) => state.activeCustomerId);
+  const setActive = useDalema((state) => state.setActiveCustomer);
+  const orders = useDalema((state) => state.orders);
+  const products = useDalema((state) => state.products);
+  const settings = useDalema((state) => state.settings);
+  const reorder = useDalema((state) => state.reorder);
+  const saveAddress = useDalema((state) => state.saveAddress);
+  const wished = useDalema((state) => wishlistIds(state));
   const customer = customers.find((entry) => entry.id === activeId) ?? null;
   const mine = customer ? orders.filter((order) => order.customerId === customer.id) : [];
   const saved = wished.map((id) => products.find((product) => product.id === id)).filter((product) => product != null);

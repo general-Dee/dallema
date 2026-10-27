@@ -4,7 +4,7 @@ import { toast } from "sonner";
 import { HoverTip } from "@/components/hover-tip";
 import { Button, DeptChip, Money, StatusPill } from "@/components/ui";
 import { formatWhen } from "@/lib/format";
-import { useDallema } from "@/lib/store";
+import { useDalema } from "@/lib/store";
 import type { OrderStatus } from "@/lib/types";
 
 export const Route = createFileRoute("/staff/orders/$id")({
@@ -37,9 +37,9 @@ const NEXT: Partial<Record<OrderStatus, { status: OrderStatus; label: string }[]
 
 function OrderDesk() {
   const { id } = Route.useParams();
-  const order = useDallema((state) => state.orders.find((entry) => entry.id === id));
-  const update = useDallema((state) => state.updateOrderStatus);
-  const markPaid = useDallema((state) => state.markOrderPaid);
+  const order = useDalema((state) => state.orders.find((entry) => entry.id === id));
+  const update = useDalema((state) => state.updateOrderStatus);
+  const markPaid = useDalema((state) => state.markOrderPaid);
   if (!order) {
     return <p>That order isn’t on the queue.</p>;
   }

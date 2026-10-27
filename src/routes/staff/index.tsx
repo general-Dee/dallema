@@ -2,18 +2,18 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { DeptChip, Money, StatusPill } from "@/components/ui";
 import { DEPARTMENTS } from "@/lib/catalog";
 import { addDays, lagosDateString, naira, sameLagosDay, whatsappHref } from "@/lib/format";
-import { lowStockProducts, useDallema } from "@/lib/store";
+import { lowStockProducts, useDalema } from "@/lib/store";
 
 export const Route = createFileRoute("/staff/")({
   component: Dashboard,
 });
 
 function Dashboard() {
-  const orders = useDallema((state) => state.orders);
-  const products = useDallema((state) => state.products);
-  const jobs = useDallema((state) => state.bakeryJobs);
-  const deliveries = useDallema((state) => state.deliveryJobs);
-  const settings = useDallema((state) => state.settings);
+  const orders = useDalema((state) => state.orders);
+  const products = useDalema((state) => state.products);
+  const jobs = useDalema((state) => state.bakeryJobs);
+  const deliveries = useDalema((state) => state.deliveryJobs);
+  const settings = useDalema((state) => state.settings);
   const today = lagosDateString();
   const weekStart = addDays(today, -6);
   const todays = orders.filter((order) => order.status === "completed" && sameLagosDay(order.createdAt, today));

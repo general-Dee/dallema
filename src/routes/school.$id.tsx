@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { toast } from "sonner";
 import { ShopShell } from "@/components/shop-shell";
 import { Button, Empty, Money } from "@/components/ui";
-import { useDallema } from "@/lib/store";
+import { useDalema } from "@/lib/store";
 
 export const Route = createFileRoute("/school/$id")({
   component: SchoolPage,
@@ -10,9 +10,9 @@ export const Route = createFileRoute("/school/$id")({
 
 function SchoolPage() {
   const { id } = Route.useParams();
-  const list = useDallema((state) => state.schoolLists.find((entry) => entry.id === id));
-  const products = useDallema((state) => state.products);
-  const add = useDallema((state) => state.addToCart);
+  const list = useDalema((state) => state.schoolLists.find((entry) => entry.id === id));
+  const products = useDalema((state) => state.products);
+  const add = useDalema((state) => state.addToCart);
   if (!list) {
     return (
       <ShopShell>

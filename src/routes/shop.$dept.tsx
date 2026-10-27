@@ -5,7 +5,7 @@ import { Empty } from "@/components/ui";
 import { inputClass } from "@/components/ui";
 import { CATEGORIES, departmentBySlug, tone } from "@/lib/catalog";
 import { cn } from "@/lib/cn";
-import { useDallema } from "@/lib/store";
+import { useDalema } from "@/lib/store";
 
 export const Route = createFileRoute("/shop/$dept")({
   validateSearch: (search: Record<string, unknown>) => {
@@ -27,7 +27,7 @@ function DepartmentPage() {
   const search = Route.useSearch();
   const navigate = Route.useNavigate();
   const dept = departmentBySlug(slug);
-  const products = useDallema((state) => state.products);
+  const products = useDalema((state) => state.products);
   if (!dept) {
     return (
       <ShopShell>

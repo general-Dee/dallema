@@ -20,7 +20,7 @@ import { HoverTip } from "@/components/hover-tip";
 import { Logo } from "@/components/logo";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { cn } from "@/lib/cn";
-import { useDallema } from "@/lib/store";
+import { useDalema } from "@/lib/store";
 
 const LINKS = [
   { to: "/staff", label: "Dashboard", icon: LayoutDashboard, exact: true },
@@ -39,8 +39,8 @@ const LINKS = [
 
 export function StaffShell({ children }: { children: ReactNode }) {
   const pathname = useRouterState({ select: (state) => state.location.pathname });
-  const staff = useDallema((state) => state.staff);
-  const logout = useDallema((state) => state.logout);
+  const staff = useDalema((state) => state.staff);
+  const logout = useDalema((state) => state.logout);
   return (
     <div className="min-h-dvh bg-page">
       <header className="border-b border-line bg-forest text-cream">

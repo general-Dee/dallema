@@ -1,16 +1,16 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { DEPARTMENTS } from "@/lib/catalog";
 import { addDays, lagosDateString, naira } from "@/lib/format";
-import { useDallema } from "@/lib/store";
+import { useDalema } from "@/lib/store";
 
 export const Route = createFileRoute("/staff/reports")({
   component: ReportsPage,
 });
 
 function ReportsPage() {
-  const orders = useDallema((state) => state.orders);
-  const products = useDallema((state) => state.products);
-  const jobs = useDallema((state) => state.bakeryJobs);
+  const orders = useDalema((state) => state.orders);
+  const products = useDalema((state) => state.products);
+  const jobs = useDalema((state) => state.bakeryJobs);
   const today = lagosDateString();
   const from = addDays(today, -6);
   const completed = orders.filter((order) => order.status === "completed" && order.createdAt.slice(0, 10) >= from);

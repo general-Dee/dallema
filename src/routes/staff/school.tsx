@@ -3,17 +3,17 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { Button, Field } from "@/components/ui";
 import { inputClass } from "@/components/ui";
-import { useDallema } from "@/lib/store";
+import { useDalema } from "@/lib/store";
 
 export const Route = createFileRoute("/staff/school")({
   component: SchoolDesk,
 });
 
 function SchoolDesk() {
-  const lists = useDallema((state) => state.schoolLists);
-  const products = useDallema((state) => state.products);
-  const customers = useDallema((state) => state.customers);
-  const create = useDallema((state) => state.createSchoolOrder);
+  const lists = useDalema((state) => state.schoolLists);
+  const products = useDalema((state) => state.products);
+  const customers = useDalema((state) => state.customers);
+  const create = useDalema((state) => state.createSchoolOrder);
   const [listId, setListId] = useState(lists[0]?.id ?? "");
   const [customerId, setCustomerId] = useState(customers[0]?.id ?? "");
   const list = lists.find((entry) => entry.id === listId);

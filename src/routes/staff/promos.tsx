@@ -7,7 +7,7 @@ import { Button, Field } from "@/components/ui";
 import { inputClass } from "@/components/ui";
 import { DEPARTMENTS } from "@/lib/catalog";
 import { naira } from "@/lib/format";
-import { blankPromo, useDallema } from "@/lib/store";
+import { blankPromo, useDalema } from "@/lib/store";
 import type { DeptId, PromoType } from "@/lib/types";
 
 export const Route = createFileRoute("/staff/promos")({
@@ -15,8 +15,8 @@ export const Route = createFileRoute("/staff/promos")({
 });
 
 function PromosPage() {
-  const promos = useDallema((state) => state.promotions);
-  const save = useDallema((state) => state.savePromo);
+  const promos = useDalema((state) => state.promotions);
+  const save = useDalema((state) => state.savePromo);
   const [draft, setDraft] = useState(blankPromo());
   return (
     <div>

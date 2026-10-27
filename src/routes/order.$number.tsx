@@ -7,7 +7,7 @@ import { STATUS_LABEL } from "@/lib/catalog";
 import { formatWhen, orderWhatsAppText, whatsappHref } from "@/lib/format";
 import { fetchSharedOrder } from "@/lib/orders.functions";
 import { confirmPaystackPayment, startPaystackPayment } from "@/lib/paystack.functions";
-import { useDallema } from "@/lib/store";
+import { useDalema } from "@/lib/store";
 
 export const Route = createFileRoute("/order/$number")({
   component: OrderPage,
@@ -15,10 +15,10 @@ export const Route = createFileRoute("/order/$number")({
 
 function OrderPage() {
   const { number } = Route.useParams();
-  const order = useDallema((state) => state.orders.find((entry) => entry.number.toLowerCase() === number.toLowerCase()));
-  const merge = useDallema((state) => state.mergeSharedOrders);
-  const customer = useDallema((state) => state.customers.find((entry) => entry.id === order?.customerId) ?? null);
-  const settings = useDallema((state) => state.settings);
+  const order = useDalema((state) => state.orders.find((entry) => entry.number.toLowerCase() === number.toLowerCase()));
+  const merge = useDalema((state) => state.mergeSharedOrders);
+  const customer = useDalema((state) => state.customers.find((entry) => entry.id === order?.customerId) ?? null);
+  const settings = useDalema((state) => state.settings);
   const [missing, setMissing] = useState(false);
   const [paying, setPaying] = useState(false);
   useEffect(() => {
@@ -45,7 +45,7 @@ function OrderPage() {
       if (result.ok && result.order) {
         merge([result.order]);
         setMissing(false);
-      } else if (!useDallema.getState().orders.some((entry) => entry.number.toLowerCase() === number.toLowerCase())) {
+      } else if (!useDalema.getState().orders.some((entry) => entry.number.toLowerCase() === number.toLowerCase())) {
         setMissing(true);
       }
     }

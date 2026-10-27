@@ -1,13 +1,13 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ShopShell } from "@/components/shop-shell";
-import { useDallema } from "@/lib/store";
+import { useDalema } from "@/lib/store";
 
 export const Route = createFileRoute("/store")({
   component: StorePage,
 });
 
 function StorePage() {
-  const settings = useDallema((state) => state.settings);
+  const settings = useDalema((state) => state.settings);
   return (
     <ShopShell>
       <h1 className="font-display text-4xl text-forest-ink">{settings.storeName}</h1>

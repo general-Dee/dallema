@@ -6,7 +6,7 @@ import { HoverTip } from "@/components/hover-tip";
 import { Button, DeptChip, Field, Money } from "@/components/ui";
 import { inputClass } from "@/components/ui";
 import { CATEGORIES, DEPARTMENTS, TAGS } from "@/lib/catalog";
-import { blankProduct, lowStockProducts, slugify, useDallema } from "@/lib/store";
+import { blankProduct, lowStockProducts, slugify, useDalema } from "@/lib/store";
 import type { Product, StockReason, Tag, Unit } from "@/lib/types";
 
 export const Route = createFileRoute("/staff/products")({
@@ -14,12 +14,12 @@ export const Route = createFileRoute("/staff/products")({
 });
 
 function ProductsPage() {
-  const products = useDallema((state) => state.products);
-  const suppliers = useDallema((state) => state.suppliers);
-  const log = useDallema((state) => state.stockLog);
-  const save = useDallema((state) => state.saveProduct);
-  const remove = useDallema((state) => state.deleteProduct);
-  const adjust = useDallema((state) => state.adjustStock);
+  const products = useDalema((state) => state.products);
+  const suppliers = useDalema((state) => state.suppliers);
+  const log = useDalema((state) => state.stockLog);
+  const save = useDalema((state) => state.saveProduct);
+  const remove = useDalema((state) => state.deleteProduct);
+  const adjust = useDalema((state) => state.adjustStock);
   const [query, setQuery] = useState("");
   const [lowOnly, setLowOnly] = useState(false);
   const [editing, setEditing] = useState<Product | null>(null);

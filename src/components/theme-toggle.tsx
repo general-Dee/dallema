@@ -10,7 +10,7 @@ export const themeBootScript = `(function(){try{var t=localStorage.getItem("${TH
 export function applyTheme(dark: boolean) {
   document.documentElement.classList.toggle("dark", dark);
   localStorage.setItem(THEME_STORAGE_KEY, dark ? "dark" : "light");
-  window.dispatchEvent(new Event("dallema-theme"));
+  window.dispatchEvent(new Event("dalema-theme"));
 }
 
 export function ThemeToggle({ onForest = false }: { onForest?: boolean }) {
@@ -19,8 +19,8 @@ export function ThemeToggle({ onForest = false }: { onForest?: boolean }) {
   useEffect(() => {
     const sync = () => setDark(document.documentElement.classList.contains("dark"));
     sync();
-    window.addEventListener("dallema-theme", sync);
-    return () => window.removeEventListener("dallema-theme", sync);
+    window.addEventListener("dalema-theme", sync);
+    return () => window.removeEventListener("dalema-theme", sync);
   }, []);
 
   const label = dark ? "Light mode" : "Dark mode";

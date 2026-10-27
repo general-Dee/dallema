@@ -5,12 +5,12 @@ import { HoverTip } from "@/components/hover-tip";
 import { ProductArt } from "@/components/product-art";
 import { Button, DeptChip, Money } from "@/components/ui";
 import { cn } from "@/lib/cn";
-import { useDallema, wishlistIds } from "@/lib/store";
+import { useDalema, wishlistIds } from "@/lib/store";
 import type { Product } from "@/lib/types";
 
 export function WishButton({ productId, floating = false }: { productId: string; floating?: boolean }) {
-  const wished = useDallema((state) => wishlistIds(state).includes(productId));
-  const toggle = useDallema((state) => state.toggleWishlist);
+  const wished = useDalema((state) => wishlistIds(state).includes(productId));
+  const toggle = useDalema((state) => state.toggleWishlist);
   const label = wished ? "Saved" : "Save";
   return (
     <HoverTip label={label} side={floating ? "bottom" : "top"}>
@@ -31,7 +31,7 @@ export function WishButton({ productId, floating = false }: { productId: string;
 }
 
 export function ProductCard({ product }: { product: Product }) {
-  const add = useDallema((state) => state.addToCart);
+  const add = useDalema((state) => state.addToCart);
   const onOffer = product.compareAtPrice != null && product.compareAtPrice > product.price;
   return (
     <article className="lift flex flex-col overflow-hidden rounded-2xl border border-line bg-card shadow-card">

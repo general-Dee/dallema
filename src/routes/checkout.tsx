@@ -7,7 +7,7 @@ import { inputClass } from "@/components/ui";
 import { furnitureSlots, grocerySlots } from "@/lib/format";
 import { startPaystackPayment } from "@/lib/paystack.functions";
 import { buildQuote } from "@/lib/pricing";
-import { useDallema } from "@/lib/store";
+import { useDalema } from "@/lib/store";
 
 export const Route = createFileRoute("/checkout")({
   component: CheckoutPage,
@@ -15,13 +15,13 @@ export const Route = createFileRoute("/checkout")({
 
 function CheckoutPage() {
   const navigate = useNavigate();
-  const cart = useDallema((state) => state.cart);
-  const products = useDallema((state) => state.products);
-  const promotions = useDallema((state) => state.promotions);
-  const settings = useDallema((state) => state.settings);
-  const promoCode = useDallema((state) => state.promoCode);
-  const customer = useDallema((state) => state.customers.find((entry) => entry.id === state.activeCustomerId) ?? null);
-  const placeOrder = useDallema((state) => state.placeOrder);
+  const cart = useDalema((state) => state.cart);
+  const products = useDalema((state) => state.products);
+  const promotions = useDalema((state) => state.promotions);
+  const settings = useDalema((state) => state.settings);
+  const promoCode = useDalema((state) => state.promoCode);
+  const customer = useDalema((state) => state.customers.find((entry) => entry.id === state.activeCustomerId) ?? null);
+  const placeOrder = useDalema((state) => state.placeOrder);
   const address0 = customer?.addresses[0];
   const [name, setName] = useState(customer?.name ?? "");
   const [phone, setPhone] = useState(customer?.phone ?? "");

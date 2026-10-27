@@ -3,18 +3,18 @@ import { useMemo, useState } from "react";
 import { toast } from "sonner";
 import { Button, Money } from "@/components/ui";
 import { inputClass } from "@/components/ui";
-import { useDallema } from "@/lib/store";
+import { useDalema } from "@/lib/store";
 
 export const Route = createFileRoute("/staff/pos")({
   component: PosPage,
 });
 
 function PosPage() {
-  const products = useDallema((state) => state.products).filter(
+  const products = useDalema((state) => state.products).filter(
     (product) => product.active && !product.isMadeToOrder,
   );
-  const customers = useDallema((state) => state.customers);
-  const checkout = useDallema((state) => state.posCheckout);
+  const customers = useDalema((state) => state.customers);
+  const checkout = useDalema((state) => state.posCheckout);
   const [query, setQuery] = useState("");
   const [customerId, setCustomerId] = useState("");
   const [lines, setLines] = useState<{ productId: string; qty: number }[]>([]);

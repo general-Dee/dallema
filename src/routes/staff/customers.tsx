@@ -4,16 +4,16 @@ import { toast } from "sonner";
 import { Button, Field } from "@/components/ui";
 import { inputClass } from "@/components/ui";
 import { formatWhen } from "@/lib/format";
-import { useDallema } from "@/lib/store";
+import { useDalema } from "@/lib/store";
 
 export const Route = createFileRoute("/staff/customers")({
   component: CustomersPage,
 });
 
 function CustomersPage() {
-  const customers = useDallema((state) => state.customers);
-  const orders = useDallema((state) => state.orders);
-  const adjust = useDallema((state) => state.adjustPoints);
+  const customers = useDalema((state) => state.customers);
+  const orders = useDalema((state) => state.orders);
+  const adjust = useDalema((state) => state.adjustPoints);
   const [open, setOpen] = useState<string | null>(customers[0]?.id ?? null);
   const [delta, setDelta] = useState(50);
   const [reason, setReason] = useState("");
